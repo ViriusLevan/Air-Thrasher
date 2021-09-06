@@ -92,7 +92,6 @@ public class HomingProjectile : MonoBehaviour, IExplodable
                     explosionForce, transform.position, explosionRadius);
             }
         }
-
         Destroy(this.gameObject);
     }
 }

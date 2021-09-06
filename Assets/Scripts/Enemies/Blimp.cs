@@ -5,11 +5,11 @@ using UnityEngine;
 public class Blimp : MonoBehaviour, IExplodable, IEnemy
 {
     [Header("Rocket Firing")]
-    [SerializeField] private GameObject rocketPrefab;
-    [SerializeField] private Transform rocketSpawnPoint;
-    [SerializeField] private float firingInterval;
+    //[SerializeField] private GameObject rocketPrefab;
+    //[SerializeField] private Transform rocketSpawnPoint;
+    //[SerializeField] private float firingInterval;
     [SerializeField] private float maxFiringDistance;
-    private float timer = 0f;
+    //private float timer = 0f;
 
     [Header("Mine Drop")]
     [SerializeField] private GameObject minePrefab;
@@ -19,6 +19,8 @@ public class Blimp : MonoBehaviour, IExplodable, IEnemy
 
     [Header("Float Height Settings")]
     [SerializeField] private float heightTarget;
+    [SerializeField] private float upwardFloatForce;
+    [SerializeField] private float restingFloatForce;
     private ConstantForce floatForce;
 
     [Header("Self Explosion and Death")]
@@ -34,17 +36,29 @@ public class Blimp : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float rotationForce;
     [SerializeField] private float force;
     private Rigidbody rb;
+    private float deltaTarget;
 
     // Start is called before the first frame update
     void Start()
     {
         floatForce = this.GetComponent<ConstantForce>();
-        timer = firingInterval;
+        //timer = firingInterval;
+        layingTimer = layingInterval;
         rb = this.GetComponent<Rigidbody>();
         if (target == null)
         {
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+            Transform tempCheck = GameObject.FindGameObjectWithTag("Player").transform;
+            if (tempCheck == null)
+            {
+                Explode();
+            }
+            else
+            {
+                target = tempCheck;
+            }
         }
+        deltaTarget = Vector3.Distance
+                (target.position, this.transform.position);
     }
 
     // Update is called once per frame
@@ -66,43 +80,83 @@ public class Blimp : MonoBehaviour, IExplodable, IEnemy
                 Explode();
             }
 
-            //Float height target
-            if (this.transform.position.y >= heightTarget)
-            {
-                floatForce.force = new Vector3(0, 5, 0);
-            }
-            else
-            {
-                floatForce.force = new Vector3(0, 10, 0);
-            }
-
             //Timer for Rocket Firing continued in FixedUpdate
-            timer -= Time.deltaTime;
+            //timer -= Time.deltaTime;
+            layingTimer -= Time.deltaTime;
         }
     }
 
     private void FixedUpdate()
     {
-        //Rocket Firing
-        if (timer <= 0)
+        if (!dead)
         {
+            deltaTarget = Vector3.Distance
+                   (target.position, this.transform.position);
+            AdjustFloat();
+            Turn();
             //If target is too far then move to him instead of firing
-            if (Vector3.Distance
-                (target.position, this.transform.position)
-                > maxFiringDistance)
+            if (deltaTarget> maxFiringDistance)
             {
-                Vector3 direction = target.position - rb.position; //getting direction
-                direction.Normalize(); //erasing magnitude
-                Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-                rb.angularVelocity = rotationAmount * rotationForce;
-                rb.velocity = transform.forward * force;
+                Move();
             }
-            else
-            {
-                timer = firingInterval;
-                Instantiate(rocketPrefab, rocketSpawnPoint.position, rocketSpawnPoint.rotation);
+            else {
+                LayMines();
             }
+            //Also resets firing timer
+            //FireRockets();
         }
+    }
+
+    private void LayMines()
+    {
+        if (layingTimer <= 0)
+        {
+            layingTimer = layingInterval;
+            Instantiate(minePrefab, mineSpawnPoint.position, mineSpawnPoint.rotation);
+        }
+    }
+
+    //private void FireRockets()
+    //{
+    //    //Rocket Firing
+    //    if (timer <= 0)
+    //    {
+    //        timer = firingInterval;
+    //        Instantiate(rocketPrefab,
+    //            rocketSpawnPoint.position, rocketSpawnPoint.rotation);
+    //    }
+    //}
+
+    private void AdjustFloat()
+    {
+        //Float height target
+        if (this.transform.position.y >= target.transform.position.y+15)
+        {
+            floatForce.force = new Vector3(0, restingFloatForce, 0);
+        }
+        else if(this.transform.position.y <= target.transform.position.y+5)
+        {
+            floatForce.force = new Vector3(0, upwardFloatForce, 0);
+        }
+    }
+
+    private void Turn()
+    {
+        Vector3 direction = target.position - rb.position; //getting direction
+        direction.Normalize(); //erasing magnitude
+        Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
+        //rb.angularVelocity = rotationAmount * rotationForce;
+        rb.AddRelativeTorque(rotationAmount * rotationForce);
+        //Debug.Log(rotationAmount +"->"+rb.angularVelocity);
+
+        rb.AddRelativeTorque(rotationAmount * rotationForce);
+    }
+
+    private void Move()
+    {
+        //rb.velocity = transform.forward * force;
+        rb.AddForce(transform.forward * force);
+        //Debug.Log(transform.forward+"->"+rb.velocity);
     }
 
     public void Explode()
@@ -122,7 +176,6 @@ public class Blimp : MonoBehaviour, IExplodable, IEnemy
                     explosionForce, transform.position, explosionRadius);
             }
         }
-
         Destroy(this.gameObject);
     }
 

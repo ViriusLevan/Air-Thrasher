@@ -134,12 +134,10 @@ GameObject:
   - component: {fileID: 6924351516892416663}
   - component: {fileID: 6924351516892416671}
   - component: {fileID: 6924351516892416670}
-  - component: {fileID: 6924351516892416669}
   - component: {fileID: 6924351516892416668}
   - component: {fileID: 6924351516892416659}
   - component: {fileID: 6924351516892416658}
   - component: {fileID: 6924351516892416657}
-  - component: {fileID: 6924351516892416656}
   - component: {fileID: 1856450041783465726}
   m_Layer: 0
   m_Name: HotAirBalloon_Balloon
@@ -211,21 +209,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!111 &6924351516892416669
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6924351516892416662}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 2d73f8bde61dfaf48964df106a379c9c, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!95 &6924351516892416668
 Animator:
   serializedVersion: 3
@@ -285,22 +268,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 6924351516892416668}
---- !u!54 &6924351516892416656
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6924351516892416662}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 14
-  m_CollisionDetection: 0
 --- !u!82 &1856450041783465726
 AudioSource:
   m_ObjectHideFlags: 0
@@ -480,4 +447,4 @@ MonoBehaviour:
   numberOfBalloons: 1
   target: {fileID: 0}
   rotationForce: 2
-  force: 40
+  force: 20

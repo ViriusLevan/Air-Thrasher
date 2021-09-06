@@ -2,23 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Powell : MonoBehaviour, IExplodable, IEnemy
+public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
 {
     [Header("Rocket Firing")]
     [SerializeField] private GameObject rocketPrefab;
-    [SerializeField] private Transform[] rocketSpawnPoints;
+    [SerializeField] private Transform rocketSpawnPoint;
     [SerializeField] private float firingInterval;
     [SerializeField] private float maxFiringDistance;
     private float timer = 0f;
 
-    [Header("Mine Drop")]
-    [SerializeField] private GameObject minePrefab;
-    [SerializeField] private Transform mineSpawnPoint;
-    [SerializeField] private float layingInterval;
-    private float layingTimer = 0f;
-
     [Header("Float Height Settings")]
     [SerializeField] private float heightTarget;
+    [SerializeField] private float upwardFloatForce;
+    [SerializeField] private float restingFloatForce;
     private ConstantForce floatForce;
 
     [Header("Self Explosion and Death")]
@@ -35,83 +31,120 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float force;
     private Rigidbody rb;
 
+    private bool active = false;
+    private float startDelay = 3f;
+
     // Start is called before the first frame update
     void Start()
     {
         floatForce = this.GetComponent<ConstantForce>();
         timer = firingInterval;
-        layingTimer = layingInterval;
         rb = this.GetComponent<Rigidbody>();
         if (target == null)
         {
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+            Transform tempCheck = GameObject.FindGameObjectWithTag("Player").transform;
+            if (tempCheck == null)
+            {
+                Explode();
+            }
+            else
+            {
+                target = tempCheck;
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (dead)
+        if (active)
         {
-            explosionTimer -= Time.deltaTime;
-            if (explosionTimer <= 0)
+            if (dead)
             {
-                Explode();
-            }
-        }
-        else
-        {
-            //If no target then explode
-            if (target == null)
-            {
-                Explode();
-            }
-
-            //Float height target
-            if (this.transform.position.y >= heightTarget)
-            {
-                floatForce.force = new Vector3(0, 2, 0);
+                explosionTimer -= Time.deltaTime;
+                if (explosionTimer <= 0)
+                {
+                    Explode();
+                }
             }
             else
             {
-                floatForce.force = new Vector3(0, 30, 0);
-            }
+                //If no target then explode
+                if (target == null)
+                {
+                    Explode();
+                }
 
-            //Timer for Rocket Firing continued in FixedUpdate
-            timer -= Time.deltaTime;
-            layingTimer -= Time.deltaTime;
+                //Timer for Rocket Firing continued in FixedUpdate
+                timer -= Time.deltaTime;
+            }
         }
+        else {
+            startDelay -= Time.deltaTime;
+        }
+       
     }
 
     private void FixedUpdate()
     {
-        //Rocket Firing
-        if (timer <= 0)
+        if (!dead && active)
         {
+            AdjustFloat();
+            Turn();
             //If target is too far then move to him instead of firing
             if (Vector3.Distance
                 (target.position, this.transform.position)
                 > maxFiringDistance)
             {
-                Vector3 direction = target.position - rb.position; //getting direction
-                direction.Normalize(); //erasing magnitude
-                Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-                rb.angularVelocity = rotationAmount * rotationForce;
-                rb.velocity = transform.forward * force;
+                Move();
             }
-            else
-            {
-                timer = firingInterval;
-                foreach (Transform sPoint in rocketSpawnPoints)
-                {
-                    Instantiate(rocketPrefab, sPoint.position, sPoint.rotation);
-                }
-            }
+            //Also resets firing timer
+            FireRockets();
         }
-        if (layingTimer <= 0) {
-            layingTimer = layingInterval;
-            Instantiate(minePrefab, mineSpawnPoint.position, mineSpawnPoint.rotation);
+    }
+
+    private void Activate() {
+        active = true;
+        GetComponentInChildren<Animator>().enabled = true;
+    }
+
+    private void FireRockets()
+    {
+        //Rocket Firing
+        if (timer <= 0)
+        {
+            timer = firingInterval;
+            Instantiate(rocketPrefab,
+                rocketSpawnPoint.position, rocketSpawnPoint.rotation);
         }
+    }
+
+    private void AdjustFloat()
+    {
+        //Float height target
+        if (this.transform.position.y >= heightTarget)
+        {
+            floatForce.force = new Vector3(0, restingFloatForce, 0);
+        }
+        else
+        {
+            floatForce.force = new Vector3(0, upwardFloatForce, 0);
+        }
+    }
+
+    private void Turn()
+    {
+        Vector3 direction = target.position - rb.position; //getting direction
+        direction.Normalize(); //erasing magnitude
+        Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
+        rb.AddRelativeTorque(rotationAmount * rotationForce);
+        //Debug.Log(rotationAmount +"->"+rb.angularVelocity);
+    }
+
+    private void Move()
+    {
+        rb.AddForce(transform.forward * force);
+        //Debug.Log(transform.forward+"->"+rb.velocity);
     }
 
     public void Explode()
@@ -131,7 +164,6 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
                     explosionForce, transform.position, explosionRadius);
             }
         }
-
         Destroy(this.gameObject);
     }
 

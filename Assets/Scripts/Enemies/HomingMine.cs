@@ -2,15 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
+public class HomingMine : MonoBehaviour, IExplodable, IEnemy
 {
-    [Header("Rocket Firing")]
-    [SerializeField] private GameObject rocketPrefab;
-    [SerializeField] private Transform rocketSpawnPoint;
-    [SerializeField] private float firingInterval;
-    [SerializeField] private float maxFiringDistance;
-    private float timer=0f;
-
     [Header("Float Height Settings")]
     [SerializeField] private float heightTarget;
     private ConstantForce floatForce;
@@ -21,21 +14,22 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float explosionForce;
     [SerializeField] private float explosionTimer;
     [SerializeField] private float numberOfBalloons;
-    private bool dead=false;
-    
+    private bool dead = false;
+
     [Header("Follow")]
     [SerializeField] private Transform target;
     [SerializeField] private float rotationForce;
     [SerializeField] private float force;
     private Rigidbody rb;
- 
+
+
     // Start is called before the first frame update
     void Start()
     {
         floatForce = this.GetComponent<ConstantForce>();
-        timer = firingInterval;
         rb = this.GetComponent<Rigidbody>();
-        if (target == null) {
+        if (target == null)
+        {
             target = GameObject.FindGameObjectWithTag("Player").transform;
         }
     }
@@ -43,56 +37,55 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
     // Update is called once per frame
     void Update()
     {
+        //Time before afterdeath explosion 
         if (dead)
         {
             explosionTimer -= Time.deltaTime;
-            if (explosionTimer <= 0) {
+            if (explosionTimer <= 0)
+            {
                 Explode();
             }
         }
-        else
+        //If no target then explode
+        if (target == null)
         {
-            //If no target then explode
-            if (target == null) {
-                Explode();
-            }
-
-            //Float height target
-            if (this.transform.position.y >= heightTarget)
-            {
-                floatForce.force = new Vector3(0, 5, 0);
-            }
-            else
-            {
-                floatForce.force = new Vector3(0, 10, 0);
-            }
-
-            //Timer for Rocket Firing continued in FixedUpdate
-            timer -= Time.deltaTime;
+            Explode();
         }
     }
 
     private void FixedUpdate()
     {
-        //Rocket Firing
-        if (timer <= 0)
+        if (!dead) { 
+            //Move to target
+            Vector3 direction = target.position - rb.position; //getting direction
+            direction.Normalize(); //erasing magnitude
+            Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
+            rb.angularVelocity = rotationAmount * rotationForce;
+            rb.velocity = transform.forward * force;
+            AdjustFloat();
+        }
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
         {
-            //If target is too far then move to him instead of firing
-            if (Vector3.Distance
-                (target.position, this.transform.position)
-                > maxFiringDistance)
-            {
-                Vector3 direction = target.position - rb.position; //getting direction
-                direction.Normalize(); //erasing magnitude
-                Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-                rb.angularVelocity = rotationAmount * rotationForce;
-                rb.velocity = transform.forward * force;
-            }
-            else
-            {
-                timer = firingInterval;
-                Instantiate(rocketPrefab, rocketSpawnPoint.position, rocketSpawnPoint.rotation);
-            }
+            collision.gameObject.GetComponent<Player>().ReduceHealth(1);
+            Explode();
+        }
+    }
+
+    private void AdjustFloat()
+    {
+        //Float height target
+        if (this.transform.position.y >= target.transform.position.y + 5)
+        {
+            floatForce.force = new Vector3(0, 5, 0);
+        }
+        else if (this.transform.position.y <= target.transform.position.y - 5)
+        {
+            floatForce.force = new Vector3(0, 50, 0);
         }
     }
 
@@ -120,10 +113,10 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
     public void ReduceBalloonCount()
     {
         numberOfBalloons -= 1;
-        if (numberOfBalloons <= 0) {
+        if (numberOfBalloons <= 0)
+        {
             floatForce.force = new Vector3(0, 0, 0);
             dead = true;
         }
     }
-
 }

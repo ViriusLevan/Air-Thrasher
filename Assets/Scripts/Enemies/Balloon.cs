@@ -9,12 +9,19 @@ public class Balloon : MonoBehaviour, ICrashable
     private IEnemy masterObject;
     private bool deflated=false;
     private AudioSource aSource;
+    private MeshRenderer meshRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         aSource = this.GetComponent<AudioSource>();
-        masterObject = this.GetComponentInParent<IEnemy>();
+        IEnemy checkMO = this.GetComponentInParent<IEnemy>();
+        //use own IEnemy if it is null on parent
+        masterObject = (checkMO == null) ? 
+            this.GetComponent<IEnemy>() :
+            checkMO;
+        //TODO, might need to add a conditional?
+        meshRenderer = this.GetComponent<MeshRenderer>();
     }
 
     // Update is called once per frame
@@ -39,11 +46,14 @@ public class Balloon : MonoBehaviour, ICrashable
 
     public void Crash()
     {
+        //TODO mesh renderer conditional
+        meshRenderer.enabled = false;
         aSource?.Play();
         deflationAnimator.SetBool("deflated", true);
         if (masterObject != null)
         {
             masterObject.ReduceBalloonCount();
         }
+        //this.transform.SetParent(null);
     }
 }

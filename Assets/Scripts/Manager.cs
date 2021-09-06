@@ -22,15 +22,23 @@ public class Manager : MonoBehaviour
         Player.playerHasDied += GameOver;
     }
 
+    private void OnDestroy()
+    {
+        Player.balloonPopped -= PlayerPoppedBalloon;
+        Player.playerHasDied -= GameOver;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        speedText.text = ((int)player.GetComponent<Player>().activeForwardSpeed).ToString();
+        //TODO revamp UI into an event based thing
+        speedText.text = ((int)player.GetComponent<Player>().GetActiveForwardSpeed()).ToString();
+        //speedText.text = ((int)player.GetComponent<Player>().GetRB().velocity.magnitude).ToString();
 
-        float pBoostFuel = player.GetComponent<Player>().boostFuel;
+        float pBoostFuel = player.GetComponent<Player>().GetBoostFuel();
         boostText.text = ((int)pBoostFuel).ToString();
 
-        float boostFill = pBoostFuel / player.GetComponent<Player>().boostMax;
+        float boostFill = pBoostFuel / player.GetComponent<Player>().GetBoostMax();
         boostBar.fillAmount = boostFill;
 
         int pHealth = player.GetComponent<Player>().GetHealth();
