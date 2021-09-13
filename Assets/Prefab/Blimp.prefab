@@ -267,7 +267,7 @@ MonoBehaviour:
   heightTarget: 65
   upwardFloatForce: 50
   restingFloatForce: 10
-  explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
+  explosionPrefab: {fileID: 5186878382678297276, guid: e43b922957ed3c04f9b9822ede29792f, type: 3}
   explosionRadius: 15
   explosionForce: 20
   explosionTimer: 3
@@ -310,7 +310,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 25
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

@@ -98,7 +98,7 @@ public class Barge : MonoBehaviour, IExplodable, IEnemy
     {
         if (timer <= 0)
         {
-            if (deltaRightTarget < 65)
+            if (deltaRightTarget < deltaLeftTarget)
             {
                 timer = firingInterval;
                 foreach (Transform sPoint in cannonPointsRight)
@@ -106,7 +106,7 @@ public class Barge : MonoBehaviour, IExplodable, IEnemy
                     Instantiate(bargeBullet, sPoint.position, sPoint.rotation);
                 }
             }
-            else if (deltaLeftTarget < 65)
+            else
             {
                 timer = firingInterval;
                 foreach (Transform sPoint in cannonPointsLeft)
@@ -114,16 +114,13 @@ public class Barge : MonoBehaviour, IExplodable, IEnemy
                     Instantiate(bargeBullet, sPoint.position, sPoint.rotation);
                 }
             }
-            else {
-                Debug.Log(deltaRightTarget+"dR dL"+deltaLeftTarget);
-            }
         }
     }
 
     private void AdjustFloat()
     {
         //Float height target
-        if (this.transform.position.y > target.transform.position.y + 2)
+        if (this.transform.position.y > target.transform.position.y + 1)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
         }

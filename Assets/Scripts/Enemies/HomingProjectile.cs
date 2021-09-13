@@ -12,8 +12,6 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     private Rigidbody rb;
     private bool shouldFollow = false;
     [SerializeField] private GameObject explosionPrefab;
-    [SerializeField] private float explosionRadius;
-    [SerializeField] private float explosionForce;
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +65,7 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Player>().ReduceHealth(1);
+            collision.gameObject.GetComponent<Player>().EnemyMissileHit(1);
             Explode();
         }
     }
@@ -81,17 +79,6 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     public void Explode()
     {
         Instantiate(explosionPrefab, transform.position, transform.rotation);
-        
-        //apply force to nearby rigidbodies with colliders
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-
-        foreach (Collider nearbyObject in colliders) {
-            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            if (rb != null) {
-                rb.AddExplosionForce(
-                    explosionForce, transform.position, explosionRadius);
-            }
-        }
         Destroy(this.gameObject);
     }
 }

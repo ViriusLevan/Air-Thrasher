@@ -10,25 +10,26 @@ public class Balloon : MonoBehaviour, ICrashable
     private bool deflated=false;
     private AudioSource aSource;
     private MeshRenderer meshRenderer;
+    private SphereCollider sCollider;
+    private CapsuleCollider cCollider;
+
+    public delegate void BalloonPopped(int boostValue, int score);
+    public static event BalloonPopped balloonPoppedByPCrash;
+    public static event BalloonPopped balloonPoppedByPShot;
 
     // Start is called before the first frame update
     void Start()
     {
         aSource = this.GetComponent<AudioSource>();
         IEnemy checkMO = this.GetComponentInParent<IEnemy>();
-        //use own IEnemy if it is null on parent
         masterObject = (checkMO == null) ? 
             this.GetComponent<IEnemy>() :
             checkMO;
-        //TODO, might need to add a conditional?
         meshRenderer = this.GetComponent<MeshRenderer>();
+        sCollider = this.GetComponent<SphereCollider>();
+        cCollider = this.GetComponent<CapsuleCollider>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -36,9 +37,7 @@ public class Balloon : MonoBehaviour, ICrashable
         {
             if (collision.gameObject.tag == "Player")
             {
-                deflated = true;
-                collision.gameObject.GetComponent<Player>().BalloonPoppedByPlane();
-                Debug.Log("Deflated");
+                balloonPoppedByPCrash.Invoke(10,100);
                 Crash();
             }
         }
@@ -46,14 +45,26 @@ public class Balloon : MonoBehaviour, ICrashable
 
     public void Crash()
     {
-        //TODO mesh renderer conditional
-        meshRenderer.enabled = false;
+        deflated = true;
+        //Debug.Log("Deflated");
+        if (meshRenderer!=null)
+            meshRenderer.enabled = false;
+        if(sCollider!=null)
+            sCollider.enabled = false;
+        if(cCollider!=null)
+            cCollider.enabled = false;
         aSource?.Play();
         deflationAnimator.SetBool("deflated", true);
         if (masterObject != null)
         {
             masterObject.ReduceBalloonCount();
         }
-        //this.transform.SetParent(null);
+        this.transform.SetParent(null);
+    }
+
+    public void CrashedByPlayerBullet()
+    {
+        balloonPoppedByPShot(3,20);
+        Crash();
     }
 }

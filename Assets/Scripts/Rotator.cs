@@ -5,12 +5,10 @@ using UnityEngine;
 public class Rotator : MonoBehaviour
 {
     private Transform tr;
-    private float timer;
 
     // Start is called before the first frame update
     void Start()
     {
-        timer = 1f;
         tr = this.GetComponent<Transform>();
     }
 

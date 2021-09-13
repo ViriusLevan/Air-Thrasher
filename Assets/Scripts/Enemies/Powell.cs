@@ -120,7 +120,7 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
     private void AdjustFloat()
     {
         //Float height target
-        if (this.transform.position.y > target.transform.position.y+5)
+        if (this.transform.position.y > heightTarget)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
         }
@@ -134,9 +134,18 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
     {
         Vector3 direction = target.position - rb.position; //getting direction
         direction.Normalize(); //erasing magnitude
-        Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-        rb.AddRelativeTorque(rotationAmount * rotationForce);
+        Vector3 rotateToPlayer = Vector3.Cross(transform.forward, direction);//calculating angle
+        rotateToPlayer = Vector3.Project(rotateToPlayer, transform.up);
+        rb.AddRelativeTorque(rotateToPlayer * rotationForce);
         //Debug.Log(rotationAmount +"->"+rb.angularVelocity);
+
+        //Local up to World Up
+        Vector3 predictedUp = Quaternion.AngleAxis(
+             rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
+             rb.angularVelocity
+         ) * transform.up;
+        Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
+        rb.AddTorque(torqueVector * force * 5);
     }
 
     private void Move()

@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
 {
+    [Header("Laser Firing")]
+    [SerializeField] private GameObject[] laserColliders;
+    [SerializeField] private Transform[] laserFirePoints;
+    [SerializeField] private LineRenderer[] laserRenderers;
+    [SerializeField] private float laserInterval;
+    [SerializeField] private float laserDuration;
+    [SerializeField] private AudioSource[] laserAudio;
+    private float laserITimer = 0f, laserDTimer = 0f;
+    private bool isFiringLaser = false;
+
     [Header("Rocket Firing")]
     [SerializeField] private GameObject rocketPrefab;
     [SerializeField] private Transform[] rocketSpawnPoints;
@@ -14,6 +24,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
     [Header("Float Height Settings")]
     [SerializeField] private float upwardFloatForce;
     [SerializeField] private float restingFloatForce;
+    [SerializeField] private float heightDifference;
     private ConstantForce floatForce;
 
     [Header("Self Explosion and Death")]
@@ -30,7 +41,10 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float force;
     private Rigidbody rb;
     [SerializeField] private Transform[] pollenChildren;
-    private float deltaTarget;
+    private float deltaTarget, stuckTimer, stuckInterval = 5f;
+    private bool reverseCourse=false;
+    private Collision stuckCollision;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,10 +62,11 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
             }
         }
         //rb.inertiaTensor = new Vector3(1,1,1);
-        rb.inertiaTensorRotation = Quaternion.identity;
-        rb.centerOfMass = new Vector3(0, 0, 0);
+        //rb.inertiaTensorRotation = Quaternion.identity;
+        //rb.centerOfMass -= new Vector3(-2.5f, -2.5f, 0);
         deltaTarget = Vector3.Distance
                 (target.position, this.transform.position);
+        stuckTimer = stuckInterval;
     }
 
     // Update is called once per frame
@@ -71,6 +86,15 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
                 Explode();
             }
 
+            if (!isFiringLaser)
+            {
+                laserITimer -= Time.deltaTime;
+            }
+            else
+            {
+                laserDTimer -= Time.deltaTime;
+            }
+
             //Timer for Rocket Firing continued in FixedUpdate
             timer -= Time.deltaTime;
         }
@@ -83,7 +107,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
             deltaTarget = Vector3.Distance
                     (target.position, this.transform.position);
             AdjustFloat();
-            //Turn();
+            RotateAxis();
             //If target is too far then move to him instead of firing
             if (deltaTarget > maxFiringDistance)
             {
@@ -91,7 +115,102 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
             }
             //Also resets firing timer
             FireRockets();
+            ToggleLaser();
         }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        stuckCollision = collision;
+        if (collision == stuckCollision)
+        {
+            stuckTimer -= Time.deltaTime;
+            if (stuckTimer <= 0)
+            {
+                stuckTimer = stuckInterval;
+                reverseCourse = !reverseCourse;
+            }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (stuckCollision == collision && reverseCourse)
+        {
+            StartCoroutine(ReverseCountdown());
+        }
+        else
+        {
+            stuckTimer = stuckInterval;
+        }
+    }
+
+    private void ToggleLaser()
+    {
+
+        if (isFiringLaser)
+        {
+            foreach (LineRenderer lr in laserRenderers)
+            {
+                lr.enabled = true;
+            }
+            int layer = 1 << LayerMask.NameToLayer("Default");
+            
+            RaycastHit hit; 
+            for (int i = 0; i < laserFirePoints.Length; i++)
+            {
+                if (Physics.Raycast(laserFirePoints[i].transform.position,
+                laserFirePoints[i].transform.TransformDirection(Vector3.forward), out hit, maxFiringDistance, layer, QueryTriggerInteraction.Ignore))
+                {
+                    Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                    laserRenderers[i].SetPosition(1, new Vector3(0, 0, hit.distance));
+                    laserColliders[i].transform.localPosition = new Vector3(0, 0, hit.distance / 2);
+                    laserColliders[i].transform.localScale = new Vector3(3.5f, 3.5f, hit.distance);
+                }
+                else
+                {
+                    laserRenderers[i].SetPosition(1, new Vector3(0, 0, maxFiringDistance));
+                    laserColliders[i].transform.localPosition = new Vector3(0, 0, (maxFiringDistance / 2) + 3);
+                    laserColliders[i].transform.localScale = new Vector3(3.5f, 3.5f, maxFiringDistance);
+                }
+                laserAudio[i].UnPause();
+                if (!laserAudio[i].isPlaying)
+                    laserAudio[i].Play();
+            }
+            
+
+            if (laserDTimer <= 0)
+            {
+                //Turn off laser 
+                laserDTimer = laserDuration;
+                isFiringLaser = false;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < laserFirePoints.Length; i++)
+            {
+                laserRenderers[i].enabled = false;
+                laserColliders[i].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                laserColliders[i].transform.localPosition = new Vector3(0, 0, 2.5f);
+                laserAudio[i].Pause();
+            }
+
+            if (laserITimer <= 0)
+            {
+                //Turn on laser 
+                laserITimer = laserInterval;
+                isFiringLaser = true;
+            }
+        }
+    }
+
+    IEnumerator ReverseCountdown() {
+        while (stuckTimer > 0f) {
+            yield return new WaitForSeconds(1);
+            stuckTimer -= 1f;
+        }
+        reverseCourse = false;
     }
 
     private void FireRockets() {
@@ -109,7 +228,8 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
 
     private void AdjustFloat() {
         //Float height target
-        if (this.transform.position.y > target.transform.position.y)
+        float maxHeight = target.transform.position.y + (heightDifference + (deltaTarget / 10f));
+        if (this.transform.position.y > maxHeight)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
         }
@@ -119,48 +239,34 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         }
     }
 
-    private void Turn() {
-        //Forward unto player
-        Vector3 direction = target.position - transform.position; //getting direction
-        direction.Normalize(); //erasing magnitude
-        Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-        //rb.AddRelativeTorque(rotationAmount * 3);
-        //Debug.Log(rotationAmount +"-"+Vector3.Angle(transform.forward, direction));
-        //Debug.DrawLine(transform.position, rotationAmount, Color.green, 1f);
-
-        Quaternion toTarget = Quaternion.FromToRotation(transform.forward,direction);
-        Quaternion uprightBalance = Quaternion.FromToRotation(transform.up, Vector3.up);
-        uprightBalance *= toTarget;
-        Vector3 rotate = new Vector3(uprightBalance.x, uprightBalance.y, uprightBalance.z);
-        rb.AddTorque(rotate * rotationForce);
-        //Debug.Log(toTarget+"X"+rotate+"="+uprightBalance);
-
-
-        //   Vector3 predictedUp = Quaternion.AngleAxis(
-        //    rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
-        //    rb.angularVelocity
-        //) * transform.up;
-        //   Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
-        //   rb.AddTorque(torqueVector * force * force);
+    private void RotateAxis() {
+        //Rotating forward transform to direction of the player
+        Vector3 direction = target.position - rb.position; 
+        direction.Normalize();
+        Vector3 rotateToPlayer = Vector3.Cross(transform.forward, direction);
+        rotateToPlayer = Vector3.Project(rotateToPlayer, transform.up);
+        rb.AddRelativeTorque(rotateToPlayer * rotationForce * 5);
 
         //Local up to World Up
-        //Vector3 yCorrection = Vector3.Cross(transform.up, Vector3.up);
-        //yCorrection.Normalize();
-        //rb.AddRelativeTorque(yCorrection * (rotationForce));
-        //Debug.Log(yCorrection + "--" + Vector3.Angle(transform.up, Vector3.up));
-        ////Do both?
-        //Vector3 upAndAway = Vector3.Cross(yCorrection, rotationAmount);
-        //upAndAway.Normalize();
-        //rb.AddRelativeTorque(upAndAway * rotationForce);
-        //Debug.DrawLine(transform.position, upAndAway, Color.green, 1f);
-        //Debug.Log(rotationAmount+"X"+yCorrection+"="+upAndAway);
-
+        Vector3 predictedUp = Quaternion.AngleAxis(
+             rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
+             rb.angularVelocity
+         ) * transform.up;
+        Vector3 uprightBalance = Vector3.Cross(predictedUp, Vector3.up);
+        rb.AddTorque(uprightBalance * rotationForce * 3);
     }
 
     private void Move() {
-        rb.AddForce(transform.forward * force);
-        Debug.Log(rb.velocity+"--"+rb.velocity.magnitude);
-        Debug.DrawLine(transform.position,transform.forward, Color.green,1f);
+        if (!reverseCourse)
+        {
+            rb.AddForce(transform.forward * force);
+            //Debug.Log(rb.velocity+"--"+rb.velocity.magnitude);
+            //Debug.DrawLine(transform.position, transform.forward, Color.green, 1f);
+        }
+        else
+        {
+            rb.AddForce(transform.forward*-1 * force);
+        }
     }
 
     public void Explode()
@@ -192,6 +298,10 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
             foreach (Transform child in pollenChildren)
             {
                 child.GetComponent<Pollen_Child>().enabled = true;
+                child.GetComponent<HingeJoint>().breakForce = 0.001f;
+                child.GetComponent<Rigidbody>().AddForce(
+                    new Vector3(Random.Range(0.001f,0.1f), Random.Range(0.001f, 0.1f), Random.Range(0.001f, 0.1f))
+                    );
                 child.SetParent(null);
             }
         }

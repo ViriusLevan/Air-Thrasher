@@ -51,7 +51,7 @@ MonoBehaviour:
     max: 180
   saturation:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 10
     min: -100
     max: 100
 --- !u!114 &7903290328526055814
@@ -69,18 +69,18 @@ MonoBehaviour:
   active: 1
   m_AdvancedMode: 0
   redOutRedIn:
-    m_OverrideState: 0
-    m_Value: 100
+    m_OverrideState: 1
+    m_Value: 145
     min: -200
     max: 200
   redOutGreenIn:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: -0
     min: -200
     max: 200
   redOutBlueIn:
-    m_OverrideState: 1
-    m_Value: -20
+    m_OverrideState: 0
+    m_Value: 0
     min: -200
     max: 200
   greenOutRedIn:

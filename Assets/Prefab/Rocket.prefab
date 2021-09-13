@@ -98,9 +98,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  force: 55
-  rotationForce: 30
-  secondsBeforeExplosion: 15
+  force: 52.5
+  rotationForce: 25
+  secondsBeforeExplosion: 17
   secondsBeforeHoming: 1
   explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
   explosionRadius: 1

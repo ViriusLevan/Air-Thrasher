@@ -5,7 +5,6 @@ using UnityEngine;
 public class HomingMine : MonoBehaviour, IExplodable, IEnemy
 {
     [Header("Float Height Settings")]
-    [SerializeField] private float heightTarget;
     private ConstantForce floatForce;
 
     [Header("Self Explosion and Death")]
@@ -21,6 +20,12 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float rotationForce;
     [SerializeField] private float force;
     private Rigidbody rb;
+
+    [SerializeField] private Animator balloonAnimator;
+    [SerializeField] private SphereCollider sCollider;
+    [SerializeField] private CapsuleCollider cCollider;
+    [SerializeField] private float timeBeforeActivation;
+    private bool active = false;
 
 
     // Start is called before the first frame update
@@ -51,17 +56,16 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
         {
             Explode();
         }
+        timeBeforeActivation -= Time.deltaTime;
+        if (timeBeforeActivation <= 0) {
+            Activate();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (!dead) { 
-            //Move to target
-            Vector3 direction = target.position - rb.position; //getting direction
-            direction.Normalize(); //erasing magnitude
-            Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
-            rb.angularVelocity = rotationAmount * rotationForce;
-            rb.velocity = transform.forward * force;
+        if (active && !dead)
+        {
             AdjustFloat();
         }
     }
@@ -71,22 +75,38 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Player>().ReduceHealth(1);
+            collision.gameObject.GetComponent<Player>().EnemyMineHit(1);
             Explode();
         }
+    }
+
+    private void Activate() {
+        active = true;
+        balloonAnimator.enabled = true;
+        sCollider.enabled = true;
+        cCollider.enabled = true;
+        floatForce.enabled = true;
     }
 
     private void AdjustFloat()
     {
         //Float height target
-        if (this.transform.position.y >= target.transform.position.y + 5)
+        if (this.transform.position.y >= 300)
         {
-            floatForce.force = new Vector3(0, 5, 0);
+            floatForce.force = new Vector3(0, 9, 0);
         }
-        else if (this.transform.position.y <= target.transform.position.y - 5)
+        else
         {
-            floatForce.force = new Vector3(0, 50, 0);
+            floatForce.force = new Vector3(0, 11, 0);
         }
+
+        //Local up to World Up
+        Vector3 predictedUp = Quaternion.AngleAxis(
+             rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
+             rb.angularVelocity
+         ) * transform.up;
+        Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
+        rb.AddTorque(torqueVector * force * force);
     }
 
     public void Explode()

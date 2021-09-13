@@ -12,7 +12,6 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
     private float timer=0f;
 
     [Header("Float Height Settings")]
-    [SerializeField] private float heightTarget;
     [SerializeField] private float upwardFloatForce;
     [SerializeField] private float restingFloatForce;
     private ConstantForce floatForce;
@@ -30,6 +29,9 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float rotationForce;
     [SerializeField] private float force;
     private Rigidbody rb;
+
+    private float stuckTimer, stuckDuration = 5f;
+    private GameObject stuckWith;
  
     // Start is called before the first frame update
     void Start()
@@ -89,6 +91,24 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        stuckTimer -= Time.deltaTime;
+        if (stuckWith != collision.gameObject) { 
+            stuckTimer = stuckDuration;
+            stuckWith = collision.gameObject;
+        }
+        if (stuckTimer <= 0) {
+            // Calculate Angle Between the collision point and this
+            Vector3 dir = collision.contacts[0].point - transform.position;
+            // We then get the opposite (-Vector3) and normalize it
+            dir = -dir.normalized;
+            // And finally we add force in the direction of dir and multiply it by force. 
+            // This will push back the player
+            rb.AddForce(dir * force);
+        }
+    }
+
     private void FireRockets() {
         //Rocket Firing
         if (timer <= 0)
@@ -101,7 +121,7 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
 
     private void AdjustFloat() {
         //Float height target
-        if (this.transform.position.y >= heightTarget)
+        if (this.transform.position.y >= target.position.y+2)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
         }
@@ -119,29 +139,16 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
         //Debug.Log(rotationAmount +"->"+rb.angularVelocity);
 
         //Local up to World Up
-        Vector3 yCorrection = Vector3.Cross(transform.up, Vector3.up);
-        yCorrection.Normalize();
-        //rb.AddRelativeTorque(yCorrection * (rotationForce));
-        //Debug.Log(yCorrection + "--" + Vector3.Angle(transform.up, Vector3.up));
-
         Vector3 predictedUp = Quaternion.AngleAxis(
          rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
          rb.angularVelocity
      ) * transform.up;
         Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
         rb.AddTorque(torqueVector * force * force);
-
-        ////Do both?
-        Vector3 upAndAway = Vector3.Cross(yCorrection, rotationAmount);
-        upAndAway.Normalize();
-        //rb.AddRelativeTorque(upAndAway * rotationForce);
-        //Debug.DrawLine(transform.position, upAndAway, Color.green, 1f);
-        //Debug.Log(rotationAmount+"X"+yCorrection+"="+upAndAway);
     }
 
     private void Move() {
         rb.AddForce(transform.forward * force);
-        Debug.DrawLine(transform.position, transform.forward, Color.green);
         //Debug.Log(transform.forward+"->"+rb.velocity);
     }
 

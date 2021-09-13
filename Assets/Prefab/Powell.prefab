@@ -46,6 +46,8 @@ GameObject:
   - component: {fileID: 2209178222393926233}
   - component: {fileID: 4344757747310053533}
   - component: {fileID: 5062930160968317537}
+  - component: {fileID: 5040872950409075272}
+  - component: {fileID: 6168398245450087033}
   m_Layer: 0
   m_Name: Powell_Balloon (2)
   m_TagString: Untagged
@@ -196,7 +198,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -271,6 +273,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &5040872950409075272
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472065967612}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!138 &6168398245450087033
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472065967612}
+  m_ConnectedBody: {fileID: 8348304178001287982}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &1012104472069175059
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,6 +380,8 @@ GameObject:
   - component: {fileID: 6498342474956141179}
   - component: {fileID: 8785566072341751883}
   - component: {fileID: 3449629642587033546}
+  - component: {fileID: 3323377032708001308}
+  - component: {fileID: 2321545222323379545}
   m_Layer: 0
   m_Name: Powell_Balloon (4)
   m_TagString: Untagged
@@ -497,7 +532,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -572,6 +607,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &3323377032708001308
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472721744510}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!138 &2321545222323379545
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472721744510}
+  m_ConnectedBody: {fileID: 8348304178001287982}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &1012104472839392190
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,6 +684,8 @@ GameObject:
   - component: {fileID: 7172621594291959670}
   - component: {fileID: 2149581494081166907}
   - component: {fileID: 3941163531582974682}
+  - component: {fileID: 3769629088747430231}
+  - component: {fileID: 1091055362590870650}
   m_Layer: 0
   m_Name: Powell_Balloon (6)
   m_TagString: Untagged
@@ -768,7 +836,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -843,6 +911,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &3769629088747430231
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472888202124}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!138 &1091055362590870650
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012104472888202124}
+  m_ConnectedBody: {fileID: 8348304178001287982}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &1012104473353905071
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,6 +988,8 @@ GameObject:
   - component: {fileID: 3934995717299707369}
   - component: {fileID: 397574746331420406}
   - component: {fileID: 2922400590243970069}
+  - component: {fileID: 6356637063518950745}
+  - component: {fileID: 8828435942451701496}
   m_Layer: 0
   m_Name: Powell_Balloon
   m_TagString: Untagged
@@ -1039,7 +1140,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -1114,6 +1215,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!54 &6356637063518950745
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2906386501209158026}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!138 &8828435942451701496
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2906386501209158026}
+  m_ConnectedBody: {fileID: 8348304178001287982}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &8248460313087667955
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,7 +1275,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8248460313087667955}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 693386513203275649}
@@ -1209,8 +1341,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 15.647308, y: 2.7206268, z: 9.537384}
-  m_Center: {x: -0.08187485, y: -2.819521, z: -13.559311}
+  m_Size: {x: 15.647308, y: 2.7206268, z: 9.665775}
+  m_Center: {x: -0.08187485, y: -2.819521, z: -0.8749943}
 --- !u!65 &7058173998322811541
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1222,8 +1354,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.033281, y: 4.080368, z: 31.918797}
-  m_Center: {x: -0.07588673, y: 0.8071728, z: -12.281546}
+  m_Size: {x: 18.186123, y: 4.459161, z: 32.409985}
+  m_Center: {x: -0.032218933, y: 0.6177764, z: 0.69867134}
 --- !u!65 &8029550958817466425
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1235,8 +1367,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8.570663, y: 4.5837135, z: 10.111675}
-  m_Center: {x: 0.029580116, y: -3.9726734, z: -3.5447712}
+  m_Size: {x: 8.570663, y: 4.5837135, z: 10.23991}
+  m_Center: {x: 0.029580116, y: -3.9726734, z: 9.395468}
 --- !u!1 &8348304178001287978
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,7 +1434,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &8348304178001287981
 MonoBehaviour:
@@ -1329,8 +1461,8 @@ MonoBehaviour:
   layingInterval: 12
   heightTarget: 70
   upwardFloatForce: 50
-  restingFloatForce: 5
-  explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
+  restingFloatForce: 0
+  explosionPrefab: {fileID: 5186878382678297276, guid: e43b922957ed3c04f9b9822ede29792f, type: 3}
   explosionRadius: 20
   explosionForce: 25
   explosionTimer: 5
