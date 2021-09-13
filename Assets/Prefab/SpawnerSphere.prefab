@@ -121,9 +121,9 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1639563352531906780}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3d5a2100622bb964187834cec7c8911d, type: 2}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -142,7 +142,9 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 5000675534003838095, guid: d4c9f59349c863f46ac14fa16e2e588c, type: 3}
   - {fileID: 2959738112704504307, guid: f39a9185895f47246a3b81694a89280e, type: 3}
+  - {fileID: 212288133527112835, guid: 2ac6a55af053de4429adc8d3f7b6bfaf, type: 3}
   - {fileID: 8348304178001287978, guid: b0eca59bd34183f4784a62465e69ac1c, type: 3}
+  - {fileID: 4812027325857300193, guid: 11440f63d720a0748a593e29e0c7c46c, type: 3}
   spawnInterval: 10
   spawnPoint: {fileID: 1639563351898991532}
 --- !u!1 &1639563352908058065
@@ -206,7 +208,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 42a0ec42ecd7b734e97cf6f827ea611c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -237,7 +239,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1639563352908058065}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5000001
   m_Height: 2
   m_Direction: 1

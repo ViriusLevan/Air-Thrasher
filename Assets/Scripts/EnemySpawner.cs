@@ -22,7 +22,7 @@ public class EnemySpawner : MonoBehaviour
         if (spawnTimer <= 0)
         {
             int spawnChoice = Random.Range(0, enemyPrefabs.Length);
-            spawnTimer = spawnInterval + (10*spawnChoice);
+            spawnTimer = spawnInterval + (11*spawnChoice);
             Vector3 originPoint = spawnPoint.position;
             Vector3 randomRange = new Vector3(Random.Range(-20, 20),
                                   Random.Range(-10, 10),
