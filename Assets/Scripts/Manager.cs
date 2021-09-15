@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class Manager : MonoBehaviour
 {
+
     [SerializeField] private TMP_Text speedText, scoreText, boostText, 
         healthText, finalScoreText, highScoreText;
     [SerializeField] private GameObject player;
@@ -26,6 +27,7 @@ public class Manager : MonoBehaviour
             highScore = PlayerPrefs.GetInt("highScore");
             highScoreText.text = highScore.ToString();
         }
+
     }
 
     // Start is called before the first frame update
