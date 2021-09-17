@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float lookRotateSpeed;
     [SerializeField] private float stationaryRotateSpeed;
     private float defaultLookRotateSpeed;
+    private float arrowHorizontal, arrowVertical;
+    private bool overrideMouse, fullyDisableMouse=false;
 
     private Vector2 lookInput, screenCenter, mouseDistance;
     private Rigidbody rb;
@@ -44,6 +46,10 @@ public class Player : MonoBehaviour
     private float gunCooldown=0.2f;
     private float gunCDTimer;
 
+    [Header("Player Death")]
+    [SerializeField] private GameObject explosionPrefab;
+    private bool dead = false;
+
     //private float stationaryModeTimer;
 
     public delegate void OnPlayerInitialized(int boostValue, int healthValuem);
@@ -61,11 +67,10 @@ public class Player : MonoBehaviour
     public delegate void OnPlayerDeath();
     public static event OnPlayerDeath playerHasDied;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        initializeUI.Invoke(boostFuel, health);
+        initializeUI?.Invoke(boostFuel, health);
         screenCenter.x = Screen.width*.5f;
         screenCenter.y = Screen.height*.5f;
 
@@ -74,134 +79,176 @@ public class Player : MonoBehaviour
         aSource = this.GetComponent<AudioSource>();
         //stationaryModeTimer = 0f;
         defaultLookRotateSpeed = lookRotateSpeed;
+        SettingsMenu.mouseMoveToggle += ToggleDisableMouse;
         Balloon.balloonPoppedByPCrash += PlayerPoppedDirectly;
         Balloon.balloonPoppedByPShot += PlayerPoppedByShooting;
         boostTimer = 0f;
     }
 
+    public void ReinitializeScreenCenter() {
+        screenCenter.x = Screen.width * .5f;
+        screenCenter.y = Screen.height * .5f;
+    }
+
     private void OnDestroy()
     {
+        SettingsMenu.mouseMoveToggle -= ToggleDisableMouse;
         Balloon.balloonPoppedByPCrash -= PlayerPoppedDirectly;
         Balloon.balloonPoppedByPShot -= PlayerPoppedByShooting;
     }
 
     private void PlayerPoppedDirectly(int fuelValue, int scoreIncrement) {
         BoostFuelChange(fuelValue);
-        balloonCrashPop.Invoke(scoreIncrement, boostFuel);
+        balloonCrashPop?.Invoke(scoreIncrement, boostFuel);
     }
 
     private void PlayerPoppedByShooting(int fuelValue, int scoreIncrement) {
         BoostFuelChange(fuelValue);
         int temp = boostFuel + fuelValue;
-        shotBalloonPop.Invoke(scoreIncrement, boostFuel);
+        shotBalloonPop?.Invoke(scoreIncrement, boostFuel);
     }
 
     // Update is called once per frame
     void Update()
     {
-        lookInput.x = Input.mousePosition.x;
-        lookInput.y = Input.mousePosition.y;
-        mouseDistance.x = (lookInput.x - screenCenter.x)/screenCenter.y;
-        mouseDistance.y = (lookInput.y - screenCenter.y)/screenCenter.y;
+        if (Time.timeScale > 0 && !dead)
+        {
+            lookInput.x = Input.mousePosition.x;
+            lookInput.y = Input.mousePosition.y;
+            mouseDistance.x = 
+                (lookInput.x - screenCenter.x) / screenCenter.y;
+            mouseDistance.y = 
+                (lookInput.y - screenCenter.y) / screenCenter.y;
 
-        mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
-        rollInput = Input.GetAxisRaw("Horizontal") * -1;
+            mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
 
-        //transform.Rotate(
-        //    -mouseDistance.y * lookRotateSpeed * Time.deltaTime,
-        //    mouseDistance.x * lookRotateSpeed * Time.deltaTime,
-        //    rollInput * rollSpeed * Time.deltaTime, Space.Self);
+            arrowHorizontal = Input.GetAxisRaw("ArrowHorizontal");
+            arrowVertical = Input.GetAxisRaw("ArrowVertical");
 
-        float verticalInput = Input.GetAxisRaw("Vertical");
-
-        if (verticalInput > 0 && boostFuel > 0)
-        {//Boost
-            if (boostTimer == 0
-                && activeForwardSpeed == forwardSpeed)
+            if (arrowHorizontal != 0 || arrowVertical != 0)
             {
-                boostFuel -= 1;
-                playerBoosted.Invoke(boostFuel);
+                overrideMouse = true;
             }
-            else if (boostTimer >= 1f) {
-                boostTimer -= 1f;
-                boostFuel -= 1;
-                playerBoosted.Invoke(boostFuel);
+            else {
+                overrideMouse = false;
             }
-            boostTimer += Time.deltaTime;
 
-            activeForwardSpeed = Mathf.Lerp(
-                    activeForwardSpeed, boostSpeed,
-                    forwardAcceleration * Time.deltaTime
-                    );
+            rollInput = Input.GetAxisRaw("Horizontal") * -1;
+            float verticalInput = Input.GetAxisRaw("Vertical");
 
-            PlayEngineSoundLoop(1);
-            AdjustBoosterEffect(beStartSpeedBoost);
-            //stationaryModeTimer = 0;
-            lookRotateSpeed = defaultLookRotateSpeed;
-        }
-        else if (verticalInput == -1)
-        {
-            activeForwardSpeed = Mathf.Lerp(
-                    activeForwardSpeed, 0,
-                    forwardAcceleration * Time.deltaTime * 2
-                    );
-            AdjustBoosterEffect(beStartSpeedNormal);
-            //if (stationaryModeTimer == 0)
-            //{
-            //    boostFuel -= 3;
-            //}
-            //else {
-            //    if (stationaryModeTimer >= 1f) {
-            //        boostFuel -= 3;
-            //        stationaryModeTimer -= 1f;
-            //    }
-            //}
-            //stationaryModeTimer += Time.deltaTime;
-            lookRotateSpeed = stationaryRotateSpeed;
-        }
-        else {
-            //normal
-            activeForwardSpeed = Mathf.Lerp(
-                    activeForwardSpeed, 1 * forwardSpeed,
-                    forwardAcceleration * Time.deltaTime
-                    );
+            if (verticalInput > 0 && boostFuel > 0)
+            {//Boost
+                if (boostTimer == 0
+                    && activeForwardSpeed == forwardSpeed)
+                {
+                    boostFuel -= 2;
+                    playerBoosted?.Invoke(boostFuel);
+                }
+                else if (boostTimer >= 1f)
+                {
+                    boostTimer -= 1f;
+                    boostFuel -= 2;
+                    playerBoosted?.Invoke(boostFuel);
+                }
+                boostTimer += Time.deltaTime;
 
-            PlayEngineSoundLoop(0);
-            AdjustBoosterEffect(beStartSpeedNormal);
-            //stationaryModeTimer = 0;
-            lookRotateSpeed = defaultLookRotateSpeed;
-        }
+                
+                activeForwardSpeed = Mathf.Lerp(
+                        activeForwardSpeed, boostSpeed,
+                        forwardAcceleration * Time.deltaTime
+                        );
 
-        if (activeForwardSpeed < 0)
-        {//No reverse force allowed
-            activeForwardSpeed = 0;
-        }
+                PlayEngineSoundLoop(1);
+                AdjustBoosterEffect(beStartSpeedBoost);
+                //stationaryModeTimer = 0;
+                lookRotateSpeed = defaultLookRotateSpeed;
+            }
+            else if (verticalInput == -1)
+            {//Stop
+                activeForwardSpeed = Mathf.Lerp(
+                        activeForwardSpeed, 0,
+                        forwardAcceleration * Time.deltaTime * 2
+                        );
+                AdjustBoosterEffect(beStartSpeedNormal);
+                //if (stationaryModeTimer == 0)
+                //{
+                //    boostFuel -= 3;
+                //}
+                //else {
+                //    if (stationaryModeTimer >= 1f) {
+                //        boostFuel -= 3;
+                //        stationaryModeTimer -= 1f;
+                //    }
+                //}
+                //stationaryModeTimer += Time.deltaTime;
+                lookRotateSpeed = stationaryRotateSpeed;
+            }
+            else
+            {//Normal
+                activeForwardSpeed = Mathf.Lerp(
+                        activeForwardSpeed, 1 * forwardSpeed,
+                        forwardAcceleration * 2 * Time.deltaTime
+                        );
 
-        if ( Time.timeScale > 0 
-            && (Input.GetButtonDown("Fire1") || Input.GetButton("Fire1"))
-            && (gunCDTimer <= 0) 
-            && (boostFuel>0) )
-        {
-            FireGun();
-        }
-        else {
-            gunCDTimer -= Time.deltaTime;
-        }
+                PlayEngineSoundLoop(0);
+                AdjustBoosterEffect(beStartSpeedNormal);
+                //stationaryModeTimer = 0;
+                lookRotateSpeed = defaultLookRotateSpeed;
+            }
 
+            if (activeForwardSpeed < 0)
+            {//No reverse force allowed
+                activeForwardSpeed = 0;
+            }
+
+            if ((Input.GetButtonDown("Fire1") || Input.GetButton("Fire1"))
+                && (gunCDTimer <= 0)
+                && (boostFuel > 0))
+            {
+                FireGun();
+            }
+            else
+            {
+                gunCDTimer -= Time.deltaTime;
+            }
+        }
         //transform.position += (transform.forward * activeForwardSpeed * Time.deltaTime);
     }
     private void FixedUpdate()
     {
-        rb.velocity = (transform.forward * activeForwardSpeed);
-        //Set the angular velocity of the Rigidbody(rotating around the Y axis, 100 deg / sec)
-        Vector3 m_EulerAngleVelocity =
-            new Vector3(
-                -mouseDistance.y * lookRotateSpeed,
-            mouseDistance.x * lookRotateSpeed,
-            rollInput * rollSpeed
-            );
-        Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
-        rb.MoveRotation(rb.rotation * deltaRotation);
+        if (!dead) { 
+            rb.velocity = (transform.forward * activeForwardSpeed);
+
+            //Set the angular velocity of the Rigidbody(rotating around the Y axis, 100 deg / sec)
+            if (overrideMouse || fullyDisableMouse)
+            {
+                Vector3 m_EulerAngleVelocity2 =
+                    new Vector3(
+                        -arrowVertical * lookRotateSpeed,
+                    arrowHorizontal * lookRotateSpeed,
+                    rollInput * rollSpeed
+                    );
+
+                Quaternion deltaRotation2 = Quaternion.Euler(m_EulerAngleVelocity2 * Time.fixedDeltaTime);
+                rb.MoveRotation(rb.rotation * deltaRotation2);
+            }
+            else
+            {
+                Vector3 m_EulerAngleVelocity =
+                    new Vector3(
+                        -mouseDistance.y * lookRotateSpeed,
+                    mouseDistance.x * lookRotateSpeed,
+                    rollInput * rollSpeed
+                    );
+
+                Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
+                rb.MoveRotation(rb.rotation * deltaRotation);
+            }
+        }
+    }
+
+    public void ToggleDisableMouse(bool newState) {
+        fullyDisableMouse = newState;
     }
 
     private void FireGun() {
@@ -209,8 +256,8 @@ public class Player : MonoBehaviour
         temp.GetComponent<Rigidbody>().velocity += rb.velocity;
         boostFuel -= 1;
         PlayRandomGunFiringSound();
-        playerFiredGun.Invoke(boostFuel);
         gunCDTimer = gunCooldown;
+        playerFiredGun?.Invoke(boostFuel);
     }
 
     private void PlayRandomGunFiringSound() {
@@ -241,6 +288,7 @@ public class Player : MonoBehaviour
     }
 
     private void BoostFuelChange(int addedValue) {
+
         boostFuel = boostFuel + addedValue;
         if (boostFuel > 100) { 
             boostFuel = 100; 
@@ -254,33 +302,69 @@ public class Player : MonoBehaviour
     }
 
     public void EnemyMineHit(int hpReduction) {
-        playerHitByMine.Invoke(health-hpReduction);
+        playerHitByMine?.Invoke(health-hpReduction);
         ReduceHealth(hpReduction);
     }
 
     public void EnemyMissileHit(int hpReduction)
     {
-        playerHitByMissile.Invoke(health - hpReduction);
+        playerHitByMissile?.Invoke(health - hpReduction);
         ReduceHealth(hpReduction);
     }
 
     public void EnemyLaserHit(int hpReduction)
     {
-        playerHitByLaser.Invoke(health - hpReduction);
+        playerHitByLaser?.Invoke(health - hpReduction);
         ReduceHealth(hpReduction);
     }
 
     public void EnemyRamHit(int hpReduction) {
-        playerHitByRam.Invoke(health - hpReduction);
+        playerHitByRam?.Invoke(health - hpReduction);
         ReduceHealth(hpReduction);
+        if ((activeForwardSpeed - 100) < 0)
+            activeForwardSpeed = 0;
+        else
+            activeForwardSpeed -= 100;
     }
+
 
     private void ReduceHealth(int amount) {
         health -= amount;
         if (health <= 0) {
-            playerHasDied?.Invoke();
+            health = 0;
+            dead = true;
+            StartCoroutine(PlayDeathAnimation());
         }
     }
+
+    private IEnumerator PlayDeathAnimation()
+    {
+        AdjustBoosterEffect(0);
+        //"Animation" is just an explosion for now lol
+        Instantiate(explosionPrefab, 
+            transform.position 
+            + new Vector3(UnityEngine.Random.Range(-3, 3), 
+            UnityEngine.Random.Range(-2, 2), 
+            UnityEngine.Random.Range(-1, 1))
+            , transform.rotation);
+        yield return new WaitForSeconds(0.5f);
+        Instantiate(explosionPrefab,
+            transform.position
+            + new Vector3(UnityEngine.Random.Range(-3, 3),
+            UnityEngine.Random.Range(-2, 2),
+            UnityEngine.Random.Range(-1, 1))
+            , transform.rotation);
+        yield return new WaitForSeconds(0.5f);
+        Instantiate(explosionPrefab,
+            transform.position
+            + new Vector3(UnityEngine.Random.Range(-3, 3),
+            UnityEngine.Random.Range(-2, 2),
+            UnityEngine.Random.Range(-1, 1))
+            , transform.rotation);
+        yield return new WaitForSeconds(0.2f);
+        playerHasDied?.Invoke();
+    }
+
 
     public float GetActiveForwardSpeed() {
         return activeForwardSpeed;

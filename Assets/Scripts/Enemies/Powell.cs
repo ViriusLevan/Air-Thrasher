@@ -35,6 +35,7 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private Transform target;
     [SerializeField] private float rotationForce;
     [SerializeField] private float force;
+    [SerializeField] private float deltaSpeedMultiplier;
     private Rigidbody rb;
     private float deltaTarget;
 
@@ -150,8 +151,13 @@ public class Powell : MonoBehaviour, IExplodable, IEnemy
 
     private void Move()
     {
-        rb.AddForce(transform.forward * force);
-        //Debug.Log(transform.forward+"->"+rb.velocity);
+        if (deltaTarget > maxFiringDistance)
+        {
+            rb.AddForce(transform.forward * force * deltaSpeedMultiplier);
+        }
+        else {
+            rb.AddForce(transform.forward * force);
+        }
     }
 
     public void Explode()

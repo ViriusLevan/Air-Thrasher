@@ -7,13 +7,16 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private float spawnInterval;
+    [SerializeField] private float spawnMultiplier;
     private float spawnTimer;
+    private float timer;
     [SerializeField] private Transform spawnPoint;
 
     // Start is called before the first frame update
     void Start()
     {
         spawnTimer = spawnInterval;
+        timer = 0f;
     }
 
     // Update is called once per frame
@@ -23,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
         if (spawnTimer <= 0)
         {
             int spawnChoice = Random.Range(0, enemyPrefabs.Length);
-            spawnTimer = spawnInterval + (11*spawnChoice);
+            spawnTimer = spawnInterval + (spawnMultiplier*spawnChoice);
             Vector3 originPoint = spawnPoint.position;
             Vector3 randomRange = new Vector3(Random.Range(-20, 20),
                                   Random.Range(-10, 10),
@@ -31,6 +34,13 @@ public class EnemySpawner : MonoBehaviour
             Vector3 randomCoordinate = new Vector3();
             randomCoordinate = originPoint + randomRange;
             Instantiate(enemyPrefabs[spawnChoice], randomCoordinate, spawnPoint.rotation);
+        }
+
+        if (spawnMultiplier > 0)
+            timer += Time.deltaTime;
+        if (timer > 20) {
+            timer = 0;
+            spawnMultiplier -= 1;
         }
     }
 }

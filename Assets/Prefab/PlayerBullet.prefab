@@ -124,7 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forwardSpeed: 600
-  explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
+  explosionPrefab: {fileID: 4168962285719015981, guid: 289467264b0d3244b95894deb82f49e9, type: 3}
   explosionRadius: 14
   explosionForce: 5
   timeBeforeExplosion: 5

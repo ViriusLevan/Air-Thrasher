@@ -59,11 +59,24 @@ public class UI_EventText : MonoBehaviour
 
         eventTexts[queuedIdx].text = eventName;
         textTimers[queuedIdx] = displayDuration;
-        animatorEventTexts[queuedIdx].
-            SetBool("Displaying", true);
+        if (!animatorEventTexts[queuedIdx].
+            GetBool("Displaying"))
+        {
+            animatorEventTexts[queuedIdx].
+                SetBool("Displaying", true);
+        }
+        else {
+            StartCoroutine(DisappearBeforeChanging(queuedIdx));
+        }
         lastModifiedIndex = queuedIdx;
     }
 
+    private IEnumerator DisappearBeforeChanging(int qIdx) {
+        textTimers[qIdx] = 0;
+        yield return new WaitForSeconds(0.1f);
+        animatorEventTexts[qIdx].
+                 SetBool("Displaying", true);
+    }
 
     private IEnumerator WaitBeforeErasingText
         (TextMeshProUGUI tmpObj, int idx) {

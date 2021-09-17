@@ -37,7 +37,7 @@ public class Balloon : MonoBehaviour, ICrashable
         {
             if (collision.gameObject.tag == "Player")
             {
-                balloonPoppedByPCrash.Invoke(10,100);
+                balloonPoppedByPCrash?.Invoke(7,100);
                 Crash();
             }
         }
@@ -64,7 +64,7 @@ public class Balloon : MonoBehaviour, ICrashable
 
     public void CrashedByPlayerBullet()
     {
-        balloonPoppedByPShot(3,20);
+        balloonPoppedByPShot?.Invoke(1,35);
         Crash();
     }
 }

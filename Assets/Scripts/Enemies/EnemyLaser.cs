@@ -7,6 +7,7 @@ public class EnemyLaser : MonoBehaviour
     private float countUp=0f;
     [SerializeField]private GameObject parent;
 
+    
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject != parent 
@@ -15,10 +16,11 @@ public class EnemyLaser : MonoBehaviour
             explosive.Explode();//explodes every explodable but a fellow pollenSpine
         }else if (other.gameObject.tag == "Player") {
             countUp += Time.deltaTime;
-            if (countUp >= 0.5f)
+            if (countUp >= 0.35f)
             {
-                countUp -= 0.5f;
-                other.gameObject.GetComponent<Player>().EnemyLaserHit(1);
+                countUp -= 0.35f;
+                other.gameObject.
+                    GetComponent<Player>().EnemyLaserHit(1);
             }
         }
     }

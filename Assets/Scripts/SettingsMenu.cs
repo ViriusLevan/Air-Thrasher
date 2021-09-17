@@ -10,7 +10,10 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Slider masterVSlider;
     [SerializeField] private Slider musicVSlider;
     [SerializeField] private Slider sfxVSlider;
-    [SerializeField] private Toggle confineToggle;
+    [SerializeField] private Toggle confineToggle, mouseMoveDisable;
+
+    public delegate void OnToggled(bool newState);
+    public static event OnToggled mouseMoveToggle;
 
     // Start is called before the first frame update
     void Start()
@@ -47,21 +50,34 @@ public class SettingsMenu : MonoBehaviour
             }
         }
         int cursorLockTemp = PlayerPrefs.GetInt("cursorLock", -1);
-        if (cursorLockTemp != -1)
+        if (cursorLockTemp == -1 || cursorLockTemp == 1)
         {
             Cursor.lockState = CursorLockMode.Confined;
+            confineToggle.isOn = true;
         }
-        else {
-            if (cursorLockTemp == 0)
-            {
-                Cursor.lockState = CursorLockMode.None;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-            }
+        else {//0
+            Cursor.lockState = CursorLockMode.None;
+            confineToggle.isOn = false;
+        }
+
+        int mouseDisable = PlayerPrefs.GetInt("mouseMoveDisable", -1);
+        if (mouseDisable == -1 || mouseDisable ==0)
+        {
+            StartCoroutine(WaitTillPlayerSpawns(false));
+            mouseMoveDisable.isOn = false;
+        }
+        else
+        {
+            StartCoroutine(WaitTillPlayerSpawns(true));
+            mouseMoveDisable.isOn = true;
         }
         PlayerPrefs.Save();
+    }
+
+    private IEnumerator WaitTillPlayerSpawns(bool state) {
+        while (mouseMoveToggle == null)
+            yield return new WaitForSeconds(0.1f);
+        mouseMoveToggle(state);
     }
 
     public void ChangeMasterVolume() {
@@ -99,6 +115,23 @@ public class SettingsMenu : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             PlayerPrefs.SetInt("cursorLock", 0);
+        }
+        PlayerPrefs.Save();
+    }
+
+    public void ToggleMouseDisable() {
+        bool state = mouseMoveDisable.isOn;
+        if (!state)
+        {
+            if(mouseMoveToggle!=null)
+                mouseMoveToggle(false);
+            PlayerPrefs.SetInt("mouseMoveDisable", 0);
+        }
+        else
+        {
+            if (mouseMoveToggle != null)
+                mouseMoveToggle(true);
+            PlayerPrefs.SetInt("mouseMoveDisable", 1);
         }
         PlayerPrefs.Save();
     }

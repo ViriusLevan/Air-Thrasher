@@ -45,6 +45,9 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
     private bool reverseCourse=false;
     private Collision stuckCollision;
 
+    public delegate void OnPollenSpineDeath();
+    public static event OnPollenSpineDeath spineDeath;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -286,6 +289,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
                     explosionForce, transform.position, explosionRadius);
             }
         }
+        spineDeath?.Invoke();
         Destroy(this.gameObject);
     }
 

@@ -1470,6 +1470,7 @@ MonoBehaviour:
   target: {fileID: 0}
   rotationForce: 20
   force: 25
+  deltaSpeedMultiplier: 2
 --- !u!1 &8397066568226293759
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     [SerializeField] private float rotationForce;
     [SerializeField] private float secondsBeforeExplosion;
     [SerializeField] private float secondsBeforeHoming;
+    private Vector3 randomVectorModifier;
     private Rigidbody rb;
     private bool shouldFollow = false;
     [SerializeField] private GameObject explosionPrefab;
@@ -29,6 +30,13 @@ public class HomingProjectile : MonoBehaviour, IExplodable
                 target = nCheck.transform;
             }
         }
+
+        randomVectorModifier =
+            new Vector3(
+                UnityEngine.Random.Range(-3, 3),
+                UnityEngine.Random.Range(-2, 2),
+                UnityEngine.Random.Range(-1, 1)
+                );
     }
 
     // Update is called once per frame
@@ -43,21 +51,24 @@ public class HomingProjectile : MonoBehaviour, IExplodable
 
     private void FixedUpdate()
     {
-        if (shouldFollow)
+        if (target!=null)
         {
-            if (target != null)
+            if (shouldFollow)
             {
-                Vector3 direction = target.position - rb.position; //getting direction
+                Vector3 direction = 
+                    target.position + randomVectorModifier - rb.position; //getting direction
                 direction.Normalize(); //erasing magnitude
-                Vector3 rotationAmount = Vector3.Cross(transform.forward, direction);//calculating angle
+                Vector3 rotationAmount = 
+                    Vector3.Cross(transform.forward, direction);//calculating angle
                 rb.angularVelocity = rotationAmount * rotationForce;
                 rb.velocity = transform.forward * force;
             }
-            else {
-                rb.velocity = new Vector3(0,0,0);
-                rb.angularVelocity = new Vector3(0, 0, 0);
-                Explode();
-            }
+        }
+        else
+        {
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.angularVelocity = new Vector3(0, 0, 0);
+            Explode();
         }
     }
 

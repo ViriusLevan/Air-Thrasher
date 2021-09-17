@@ -145,7 +145,8 @@ MonoBehaviour:
   - {fileID: 212288133527112835, guid: 2ac6a55af053de4429adc8d3f7b6bfaf, type: 3}
   - {fileID: 8348304178001287978, guid: b0eca59bd34183f4784a62465e69ac1c, type: 3}
   - {fileID: 4812027325857300193, guid: 11440f63d720a0748a593e29e0c7c46c, type: 3}
-  spawnInterval: 10
+  spawnInterval: 7
+  spawnMultiplier: 11
   spawnPoint: {fileID: 1639563351898991532}
 --- !u!1 &1639563352908058065
 GameObject:
