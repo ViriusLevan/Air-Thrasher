@@ -5,6 +5,8 @@ using UnityEngine;
 public class NewgroundsMedals : MonoBehaviour
 {
     public io.newgrounds.core ngio_core; 
+    public delegate void OnMedalCallback(string idx, int points);
+    public static event OnMedalCallback MedalCalledback;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +23,7 @@ public class NewgroundsMedals : MonoBehaviour
     }
 
     // call this method whenever you want to unlock a medal.
-    void unlockMedal(int medal_id)
+    public void unlockMedal(int medal_id)
     {
         // create the component
         io.newgrounds.components.Medal.unlock medal_unlock = new io.newgrounds.components.Medal.unlock();
@@ -33,15 +35,15 @@ public class NewgroundsMedals : MonoBehaviour
         medal_unlock.callWith(ngio_core, onMedalUnlocked);
     }
 
-    void onLoginChecked(bool is_logged_in)
-    {
-        // do something
-    }
+    //void onLoginChecked(bool is_logged_in)
+    //{
+    //    // do something
+    //}
 
-    void checkLogin()
-    {
-        ngio_core.checkLogin(onLoginChecked);
-    }
+    //void checkLogin()
+    //{
+    //    ngio_core.checkLogin(onLoginChecked);
+    //}
 
     void NgioReady()
     {
@@ -56,5 +58,6 @@ public class NewgroundsMedals : MonoBehaviour
         io.newgrounds.objects.medal medal = result.medal;
         Debug.Log("Medal Unlocked: " + medal.name + 
             " (" + medal.value + " points)");
+        MedalCalledback?.Invoke(medal.name, medal.value);
     }
 }

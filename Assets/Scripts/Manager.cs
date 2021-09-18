@@ -11,13 +11,17 @@ public class Manager : MonoBehaviour
 {
 
     [SerializeField] private TMP_Text speedText, scoreText, boostText, 
-        healthText, finalScoreText, highScoreText, timeText;
+        healthText, finalScoreText, highScoreText, timeText, medalPoint;
     [SerializeField] private GameObject player;
     [SerializeField] private Image healthBar, boostBar;
     [SerializeField] private GameObject finalPanel;
     [SerializeField] private UI_EventText eventText;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private Button pauseButton, restartButton;
+    [SerializeField] private NewgroundsMedals ngMedalsHandler;
+    [SerializeField] private Animator achievementAnimator;
+    [SerializeField] private Image achievementSprite;
+    [SerializeField] private Sprite[] achievementSprites; 
     private int score, playerMaxHealth, highScore, pollenKillCount;
     private float playerMaxBoost, pauseTimer=0f, 
         pauseCooldown=0.5f, runtime=0f;
@@ -37,7 +41,7 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {//TODO remove this
-        Cursor.visible = false;
+        //Cursor.visible = false;
 
         pollenKillCount = 0;
         if (player == null)
@@ -53,6 +57,7 @@ public class Manager : MonoBehaviour
         Player.shotBalloonPop += PlayerShotPopped;
         Player.playerHasDied += GameOver;
         Pollen_Spine.spineDeath += IncrementSpineKillCount;
+        NewgroundsMedals.MedalCalledback += DisplayMedalUnlock;
     }
 
     private void OnDestroy()
@@ -68,6 +73,7 @@ public class Manager : MonoBehaviour
         Player.playerHasDied -= GameOver;
         Player.initializeUI -= InitializeUI;
         Pollen_Spine.spineDeath -= IncrementSpineKillCount;
+        NewgroundsMedals.MedalCalledback -= DisplayMedalUnlock;
     }
     private void InitializeUI(int boost, int health)
     {
@@ -183,22 +189,50 @@ public class Manager : MonoBehaviour
             highScoreText.text = highScore.ToString();
         }
 
-        //TODO medal unlock : Thrasher
-        if (score >= 2000 && runtime < 60) { 
-
+        if (score >= 2000 && runtime < 60) {
+            if (ngMedalsHandler != null) {
+                ngMedalsHandler?.unlockMedal(65275);
+            }
         }
-        //TODO medal unlock : Endurance
         if (score >= 10000) {
-            
+            if (ngMedalsHandler != null)
+            {
+                ngMedalsHandler?.unlockMedal(65274);
+            }
         }
     }
 
     private void IncrementSpineKillCount() {
         pollenKillCount += 1;
-        //TODO medal unlock : Allergic to Lasers
-        if (pollenKillCount >= 10) { 
-        
+        if (pollenKillCount >= 10) {
+            if (ngMedalsHandler != null)
+            {
+                ngMedalsHandler?.unlockMedal(65273);
+            }
         }
+    }
+
+    private void DisplayMedalUnlock(string index, int points) {
+        switch (index) {
+            case "Thrasher"://Thrasher
+                achievementSprite.sprite = achievementSprites[0];
+                break;
+            case "Endurance"://Endurance
+                achievementSprite.sprite = achievementSprites[1];
+                break;
+            default://Laser Allergy
+                achievementSprite.sprite = achievementSprites[2];
+                break;
+        }
+        medalPoint.text = points + " Points";
+        StartCoroutine(DisplayCheevoMomentarily());
+    }
+
+    private IEnumerator DisplayCheevoMomentarily()
+    {
+        achievementAnimator.SetBool("disappear",false);
+        yield return new WaitForSeconds(5f);
+        achievementAnimator.SetBool("disappear", true);
     }
 
     public void GameOver() {
