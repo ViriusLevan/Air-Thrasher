@@ -13,14 +13,8 @@ public class NewgroundsMedals : MonoBehaviour
     {
         // this will call NgioReady when the core has properly initialized.
         ngio_core.onReady(NgioReady);
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     // call this method whenever you want to unlock a medal.
     public void unlockMedal(int medal_id)

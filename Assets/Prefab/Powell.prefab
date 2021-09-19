@@ -131,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 1012104472065967606}
+  mObjectGO: {fileID: 0}
 --- !u!95 &1012104472065967606
 Animator:
   serializedVersion: 3
@@ -465,6 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 1012104472721744496}
+  mObjectGO: {fileID: 0}
 --- !u!95 &1012104472721744496
 Animator:
   serializedVersion: 3
@@ -769,6 +771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 1012104472888202118}
+  mObjectGO: {fileID: 0}
 --- !u!95 &1012104472888202118
 Animator:
   serializedVersion: 3
@@ -1073,6 +1076,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 2906386501209158031}
+  mObjectGO: {fileID: 0}
 --- !u!95 &2906386501209158031
 Animator:
   serializedVersion: 3
@@ -1455,13 +1459,13 @@ MonoBehaviour:
   - {fileID: 1012104472670519465}
   - {fileID: 1012104472839392189}
   firingInterval: 15
-  maxFiringDistance: 40
+  maxFiringDistance: 45
   minePrefab: {fileID: 8665912597451024763, guid: a21ff36431e255443b3023eee5aff761, type: 3}
   mineSpawnPoint: {fileID: 1012104472069175058}
   layingInterval: 12
-  heightTarget: 70
+  heightTarget: 250
   upwardFloatForce: 50
-  restingFloatForce: 0
+  restingFloatForce: 20
   explosionPrefab: {fileID: 5186878382678297276, guid: e43b922957ed3c04f9b9822ede29792f, type: 3}
   explosionRadius: 20
   explosionForce: 25

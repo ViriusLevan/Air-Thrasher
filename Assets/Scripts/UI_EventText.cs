@@ -25,16 +25,21 @@ public class UI_EventText : MonoBehaviour
         //Timer until moving texts to the left
         for (int i = 0; i < eventTexts.Length; i++)
         {
-            if (textTimers[i]>-10f)
+            if (textTimers[i] > -10f)
             {
                 textTimers[i] -= Time.deltaTime;
-                if (textTimers[i] <= 0) {
+                if (textTimers[i] <= 0)
+                {
                     animatorEventTexts[i].
-                        SetBool("Displaying",false);
+                        SetBool("Displaying", false);
                     textTimers[i] = -10f;
-                    lastModifiedIndex = 
-                        (i-1<0) ? eventTexts.Length-1 : i-1;
+                    lastModifiedIndex =
+                        (i - 1 < 0) ? eventTexts.Length - 1 : i - 1;
                 }
+            }
+            else {
+                animatorEventTexts[i].
+                            SetBool("Displaying", false);
             }
         }
     }
@@ -44,7 +49,10 @@ public class UI_EventText : MonoBehaviour
         if (lastModifiedIndex == eventTexts.Length - 1) {
             queuedIdx = 0;
         }
-        if (whatColor == 2)//blue
+        if (whatColor == 3) {
+            eventTexts[queuedIdx].color = new Color(59, 212, 0, 255);
+        }
+        else if (whatColor == 2)//blue
         {
             eventTexts[queuedIdx].color = new Color(0, 117, 255, 255);
         }

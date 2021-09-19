@@ -79,6 +79,14 @@ public class HomingProjectile : MonoBehaviour, IExplodable
             collision.gameObject.GetComponent<Player>().EnemyMissileHit(1);
             Explode();
         }
+        else if (collision.gameObject.TryGetComponent(out Balloon bal))
+        {
+            bal.CrashedByFriendlyMissile();
+        }
+        else
+        {
+            Explode();
+        }
     }
 
     private IEnumerator WaitBeforeHoming() {

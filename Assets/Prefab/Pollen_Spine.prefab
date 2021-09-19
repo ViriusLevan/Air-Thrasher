@@ -139,7 +139,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 374242758404768595}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5884c91e44cf3544dba37b0cbe103749, type: 2}
   m_CullingMode: 0
@@ -240,7 +240,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2065493769313502108}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5884c91e44cf3544dba37b0cbe103749, type: 2}
   m_CullingMode: 0
@@ -380,6 +380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 8623779406492181520}
+  mObjectGO: {fileID: 2101163276488416928}
 --- !u!82 &4417488229443624927
 AudioSource:
   m_ObjectHideFlags: 0
@@ -401,9 +402,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -509,7 +510,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 1738091211267741407}
   laserInterval: 5
   laserDuration: 2
-  maxFiringDistance: 60
+  maxFiringDistance: 180
   laserAudio: {fileID: 8916020866427687109}
   upwardFloatForce: 60
   restingFloatForce: 5
@@ -546,7 +547,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -14.000006, y: 0.14999962, z: -0.6000004}
+  m_ConnectedAnchor: {x: -14.000006, y: 0.1499939, z: -0.6000004}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -650,6 +651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 8405616824621855713}
+  mObjectGO: {fileID: 2599828891394181253}
 --- !u!82 &1597255810185450937
 AudioSource:
   m_ObjectHideFlags: 0
@@ -671,9 +673,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -779,7 +781,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 7819521994029791685}
   laserInterval: 5
   laserDuration: 2
-  maxFiringDistance: 60
+  maxFiringDistance: 180
   laserAudio: {fileID: 479656049023798427}
   upwardFloatForce: 60
   restingFloatForce: 5
@@ -816,7 +818,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 7.000001, y: 0.14999962, z: 2.800004}
+  m_ConnectedAnchor: {x: 7.000001, y: 0.1499939, z: 2.800004}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -908,21 +910,21 @@ AudioSource:
   m_GameObject: {fileID: 3092156305497372156}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6965491634256233423, guid: a41461b8856f91e438e823438f4930f2, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d2421ba7e91d13145b2feafc74fb5d84, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
-  m_Pitch: 1.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -930,23 +932,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.003704071
+      value: 0.25571823
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0204082
+      outSlope: -1.0204082
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -985,7 +987,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.25045642
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1423,7 +1425,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4226013353346585463}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5884c91e44cf3544dba37b0cbe103749, type: 2}
   m_CullingMode: 0
@@ -1551,21 +1553,21 @@ AudioSource:
   m_GameObject: {fileID: 4402699112100258336}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6965491634256233423, guid: a41461b8856f91e438e823438f4930f2, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d2421ba7e91d13145b2feafc74fb5d84, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
-  m_Pitch: 1.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1573,23 +1575,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.003704071
+      value: 0.25571823
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0204082
+      outSlope: -1.0204082
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1628,7 +1630,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.25045642
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1679,7 +1681,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4572517449412986886}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5884c91e44cf3544dba37b0cbe103749, type: 2}
   m_CullingMode: 0
@@ -2298,6 +2300,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4812027326149019824}
+  mObjectGO: {fileID: 0}
 --- !u!82 &4812027326149019786
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2603,6 +2606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4812027326503186185}
+  mObjectGO: {fileID: 0}
 --- !u!82 &4812027326503186179
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2877,6 +2881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4812027326905906277}
+  mObjectGO: {fileID: 0}
 --- !u!82 &4812027326905906303
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3151,6 +3156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4812027326916082432}
+  mObjectGO: {fileID: 0}
 --- !u!82 &4812027326916082458
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3486,6 +3492,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4812027327333619497}
+  mObjectGO: {fileID: 0}
 --- !u!82 &4812027327333619491
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3852,6 +3859,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 213365559028322105}
+  mObjectGO: {fileID: 5189370731050763640}
 --- !u!82 &5618008424882675756
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3873,9 +3881,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -3981,7 +3989,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 3724536930581195237}
   laserInterval: 5
   laserDuration: 2
-  maxFiringDistance: 60
+  maxFiringDistance: 180
   laserAudio: {fileID: 1882929993063276469}
   upwardFloatForce: 60
   restingFloatForce: 5
@@ -4018,7 +4026,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 14.000006, y: 0.14999962, z: -0.59999657}
+  m_ConnectedAnchor: {x: 14.000006, y: 0.1499939, z: -0.59999657}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -4211,7 +4219,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6248052000521950246}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5884c91e44cf3544dba37b0cbe103749, type: 2}
   m_CullingMode: 0
@@ -4467,21 +4475,21 @@ AudioSource:
   m_GameObject: {fileID: 6620030772977636365}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6965491634256233423, guid: a41461b8856f91e438e823438f4930f2, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d2421ba7e91d13145b2feafc74fb5d84, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
-  m_Pitch: 1.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -4489,23 +4497,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.003704071
+      value: 0.25571823
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0204082
+      outSlope: -1.0204082
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -4544,7 +4552,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.25045642
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4694,6 +4702,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 7757368270371622719}
+  mObjectGO: {fileID: 6859246602377024351}
 --- !u!82 &8340830693047397941
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4715,9 +4724,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -4823,7 +4832,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 8332199137402467561}
   laserInterval: 5
   laserDuration: 2
-  maxFiringDistance: 60
+  maxFiringDistance: 180
   laserAudio: {fileID: 5426335500863524804}
   upwardFloatForce: 60
   restingFloatForce: 5
@@ -4860,7 +4869,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -7.000001, y: 0.14999962, z: 2.800002}
+  m_ConnectedAnchor: {x: -7.000001, y: 0.1499939, z: 2.800002}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -5081,21 +5090,21 @@ AudioSource:
   m_GameObject: {fileID: 7068804939857946046}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6965491634256233423, guid: a41461b8856f91e438e823438f4930f2, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d2421ba7e91d13145b2feafc74fb5d84, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
-  m_Pitch: 1.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5103,23 +5112,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.003704071
+      value: 0.25571823
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0204082
+      outSlope: -1.0204082
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -5158,7 +5167,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.25045642
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5236,21 +5245,21 @@ AudioSource:
   m_GameObject: {fileID: 7337582857471397333}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -6965491634256233423, guid: a41461b8856f91e438e823438f4930f2, type: 2}
+  OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d2421ba7e91d13145b2feafc74fb5d84, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
-  m_Pitch: 1.2
+  m_Pitch: 0.8
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 100
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5258,23 +5267,23 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.003704071
+      value: 0.25571823
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0204082
+      outSlope: -1.0204082
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -5313,7 +5322,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.25045642
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5403,6 +5412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 3111623340753686762}
+  mObjectGO: {fileID: 7907690647531559588}
 --- !u!82 &1598656444839908878
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5424,9 +5434,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 50
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5532,7 +5542,7 @@ MonoBehaviour:
   laserRenderer: {fileID: 5477562350404157838}
   laserInterval: 5
   laserDuration: 2
-  maxFiringDistance: 60
+  maxFiringDistance: 180
   laserAudio: {fileID: 2449906448078112836}
   upwardFloatForce: 60
   restingFloatForce: 5
@@ -5569,7 +5579,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.14999962, z: 2.8000033}
+  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.1499939, z: 2.8000033}
   m_UseSpring: 0
   m_Spring:
     spring: 0

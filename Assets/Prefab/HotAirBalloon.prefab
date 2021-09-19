@@ -388,7 +388,7 @@ MonoBehaviour:
   rocketPrefab: {fileID: 5944898077240511394, guid: 1ac42b15a83630f4ebe5ed6b25e3dc01, type: 3}
   rocketSpawnPoint: {fileID: 5000675533157234982}
   firingInterval: 5
-  maxFiringDistance: 60
+  maxFiringDistance: 40
   upwardFloatForce: 60
   restingFloatForce: 5
   explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}

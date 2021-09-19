@@ -6,6 +6,7 @@ public class Balloon : MonoBehaviour, ICrashable
 {
     [SerializeField] private Animator deflationAnimator;
     //[SerializeField] private float deflationSpeed;
+    [SerializeField] private GameObject mObjectGO;
     private IEnemy masterObject;
     private bool deflated=false;
     private AudioSource aSource;
@@ -16,15 +17,27 @@ public class Balloon : MonoBehaviour, ICrashable
     public delegate void BalloonPopped(int boostValue, int score);
     public static event BalloonPopped balloonPoppedByPCrash;
     public static event BalloonPopped balloonPoppedByPShot;
+    public static event BalloonPopped balloonPoppedByFMissile;
 
     // Start is called before the first frame update
     void Start()
     {
         aSource = this.GetComponent<AudioSource>();
-        IEnemy checkMO = this.GetComponentInParent<IEnemy>();
-        masterObject = (checkMO == null) ? 
-            this.GetComponent<IEnemy>() :
-            checkMO;
+        if (mObjectGO == null)
+        {
+            IEnemy checkMO = this.GetComponentInParent<IEnemy>();
+            if (checkMO == null)
+            {
+                masterObject = this.GetComponent<IEnemy>();
+            }
+            else
+            {
+                masterObject = checkMO;
+            }
+        }
+        else {
+            masterObject = mObjectGO.GetComponent<IEnemy>();
+        }
         meshRenderer = this.GetComponent<MeshRenderer>();
         sCollider = this.GetComponent<SphereCollider>();
         cCollider = this.GetComponent<CapsuleCollider>();
@@ -53,7 +66,7 @@ public class Balloon : MonoBehaviour, ICrashable
             sCollider.enabled = false;
         if(cCollider!=null)
             cCollider.enabled = false;
-        aSource?.Play();
+        aSource?.PlayOneShot(aSource.clip, SettingsMenu.sfxVolume);
         deflationAnimator.SetBool("deflated", true);
         if (masterObject != null)
         {
@@ -67,4 +80,10 @@ public class Balloon : MonoBehaviour, ICrashable
         balloonPoppedByPShot?.Invoke(1,35);
         Crash();
     }
+
+    public void CrashedByFriendlyMissile() {
+        balloonPoppedByFMissile?.Invoke(1,40);
+        Crash();
+    }
+    
 }

@@ -120,7 +120,7 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
 
     private void Activate() {
         active = true;
-        balloonAnimator.enabled = true;
+        balloonAnimator.SetBool("deflated",false);
         GetComponent<Balloon>().enabled = true;
         GetComponent<CapsuleCollider>().enabled = true;
         GetComponent<SphereCollider>().enabled = true;
@@ -136,7 +136,7 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
             int layer = 1 << LayerMask.NameToLayer("Default");
             RaycastHit hit;
             if (Physics.Raycast(laserFirePoint.transform.position,
-                laserFirePoint.transform.TransformDirection(Vector3.forward), out hit, 100, layer, QueryTriggerInteraction.Ignore))
+                laserFirePoint.transform.TransformDirection(Vector3.forward), out hit, maxFiringDistance, layer, QueryTriggerInteraction.Ignore))
             {
                 Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
                 laserRenderer.SetPosition(1, new Vector3(0, 0, hit.distance));
@@ -145,10 +145,11 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
             }
             else
             {
-                laserRenderer.SetPosition(1, new Vector3(0, 0, 100));
-                laserCollider.transform.localScale = new Vector3(3.5f, 3.5f, 100);
-                laserCollider.transform.localPosition = new Vector3(0, 0, 53);
+                laserRenderer.SetPosition(1, new Vector3(0, 0, maxFiringDistance));
+                laserCollider.transform.localScale = new Vector3(3.5f, 3.5f, maxFiringDistance);
+                laserCollider.transform.localPosition = new Vector3(0, 0, maxFiringDistance/2+3);
             }
+            laserAudio.volume = SettingsMenu.sfxVolume;
             laserAudio.UnPause();
             if (!laserAudio.isPlaying) {
                 laserAudio.Play();

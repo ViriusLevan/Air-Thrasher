@@ -21,11 +21,13 @@ public class Manager : MonoBehaviour
     [SerializeField] private NewgroundsMedals ngMedalsHandler;
     [SerializeField] private Animator achievementAnimator;
     [SerializeField] private Image achievementSprite;
-    [SerializeField] private Sprite[] achievementSprites; 
+    [SerializeField] private Sprite[] achievementSprites;
+    [SerializeField] private AudioSource music;
     private int score, playerMaxHealth, highScore, pollenKillCount;
     private float playerMaxBoost, pauseTimer=0f, 
         pauseCooldown=0.5f, runtime=0f;
     private bool dead=false; //bruh
+    private bool[] medalAlreadyUnlocked;
     public bool paused;
 
     private void Awake()
@@ -35,14 +37,15 @@ public class Manager : MonoBehaviour
             highScore = PlayerPrefs.GetInt("highScore");
             highScoreText.text = highScore.ToString();
         }
-
     }
 
     // Start is called before the first frame update
     void Start()
-    {//TODO remove this
+    {   //TODO remove this
         //Cursor.visible = false;
 
+        medalAlreadyUnlocked = new bool[3];
+        music.volume = SettingsMenu.musicVolume;
         pollenKillCount = 0;
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player");
@@ -53,11 +56,18 @@ public class Manager : MonoBehaviour
         Player.playerHitByMine += PlayerHitByMine;
         Player.playerHitByLaser += PlayerHitByLaser;
         Player.playerHitByRam += PlayerHitByRam;
+
         Player.balloonCrashPop += PlayerDirectlyPopped;
         Player.shotBalloonPop += PlayerShotPopped;
+        Player.friendlyMissilePop += FriendlyMissilePopped;
+        Player.enemyMineExplosion += ExplosionByMine;
+        Player.enemyLaserExplosion += ExplosionByLaser;
+        Player.enemyRamExplosion += ExplosionByRam;
+
         Player.playerHasDied += GameOver;
         Pollen_Spine.spineDeath += IncrementSpineKillCount;
         NewgroundsMedals.MedalCalledback += DisplayMedalUnlock;
+        SettingsMenu.musicVolumeChange += ChangeMusicVolume;
     }
 
     private void OnDestroy()
@@ -68,12 +78,19 @@ public class Manager : MonoBehaviour
         Player.playerHitByMine -= PlayerHitByMine;
         Player.playerHitByLaser -= PlayerHitByLaser;
         Player.playerHitByRam -= PlayerHitByRam;
+
         Player.balloonCrashPop -= PlayerDirectlyPopped;
         Player.shotBalloonPop -= PlayerShotPopped;
+        Player.friendlyMissilePop -= FriendlyMissilePopped;
+        Player.enemyMineExplosion -= ExplosionByMine;
+        Player.enemyLaserExplosion -= ExplosionByLaser;
+        Player.enemyRamExplosion -= ExplosionByRam;
+
         Player.playerHasDied -= GameOver;
         Player.initializeUI -= InitializeUI;
         Pollen_Spine.spineDeath -= IncrementSpineKillCount;
         NewgroundsMedals.MedalCalledback -= DisplayMedalUnlock;
+        SettingsMenu.musicVolumeChange -= ChangeMusicVolume;
     }
     private void InitializeUI(int boost, int health)
     {
@@ -114,6 +131,10 @@ public class Manager : MonoBehaviour
             runtime += Time.deltaTime;
             timeText.text = runtime.ToString("0.00");
         }
+    }
+
+    private void ChangeMusicVolume(float newVal) {
+        music.volume = newVal;
     }
 
     private void PlayerFiredGun(int updatedFuelValue)
@@ -180,6 +201,34 @@ public class Manager : MonoBehaviour
         ChangeBoostDisplay(updatedFuel);
     }
 
+    private void FriendlyMissilePopped
+        (int scoreIncrease, int updatedFuel) {
+        eventText?.DisplayAnEvent("Missile Fratricide", 3);
+        IncreaseScore(scoreIncrease);
+        ChangeBoostDisplay(updatedFuel);
+    }
+
+    private void ExplosionByMine(int scoreIncrease, int updatedFuel)
+    {
+        eventText?.DisplayAnEvent("Mine Fratricide", 3);
+        IncreaseScore(scoreIncrease);
+        ChangeBoostDisplay(updatedFuel);
+    }
+
+    private void ExplosionByRam(int scoreIncrease, int updatedFuel)
+    {
+        eventText?.DisplayAnEvent("Ram Fratricide", 3);
+        IncreaseScore(scoreIncrease);
+        ChangeBoostDisplay(updatedFuel);
+    }
+
+    private void ExplosionByLaser(int scoreIncrease, int updatedFuel)
+    {
+        eventText?.DisplayAnEvent("Laser Fratricide", 3);
+        IncreaseScore(scoreIncrease);
+        ChangeBoostDisplay(updatedFuel);
+    }
+
     private void IncreaseScore(int amount) {
         score += amount;
         scoreText.text = score.ToString();
@@ -189,25 +238,31 @@ public class Manager : MonoBehaviour
             highScoreText.text = highScore.ToString();
         }
 
-        if (score >= 2000 && runtime < 60) {
+        if (score >= 2000 && runtime < 60
+            && !medalAlreadyUnlocked[0]) {
             if (ngMedalsHandler != null) {
                 ngMedalsHandler?.unlockMedal(65275);
+                medalAlreadyUnlocked[0] = true;
             }
         }
-        if (score >= 10000) {
+        if (score >= 10000
+            && !medalAlreadyUnlocked[1]) {
             if (ngMedalsHandler != null)
             {
                 ngMedalsHandler?.unlockMedal(65274);
+                medalAlreadyUnlocked[1] = true;
             }
         }
     }
 
     private void IncrementSpineKillCount() {
         pollenKillCount += 1;
-        if (pollenKillCount >= 10) {
+        if (pollenKillCount >= 10 
+            && !!medalAlreadyUnlocked[2]) {
             if (ngMedalsHandler != null)
             {
                 ngMedalsHandler?.unlockMedal(65273);
+                medalAlreadyUnlocked[2] = true;
             }
         }
     }
@@ -250,6 +305,7 @@ public class Manager : MonoBehaviour
             settingsPanel.SetActive(false);
             Time.timeScale = 1;
             paused = false;
+            AudioListener.pause = false;
             EventSystem.current.SetSelectedGameObject(null);
         }
         else{
@@ -257,6 +313,7 @@ public class Manager : MonoBehaviour
             settingsPanel.SetActive(true);
             paused = true;
             pauseButton.Select();
+            AudioListener.pause=true;
         }
     }
 

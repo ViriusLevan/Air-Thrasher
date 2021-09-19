@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int boostMax;
     [SerializeField] private int health;
     [SerializeField] private int maxHealth;
-    private AudioSource aSource;
+    [SerializeField] private AudioSource engineASource;
 
     [Header("Booster Effect")]
     [SerializeField] private ParticleSystem boosterEffect;
@@ -62,7 +62,9 @@ public class Player : MonoBehaviour
     public static event OnHealthChanged playerHitByMissile, playerHitByMine, playerHitByLaser,playerHitByRam;
 
     public delegate void OnScoreIncrement(int scoreIncrement, int updatedFuel);
-    public static event OnScoreIncrement balloonCrashPop, shotBalloonPop;
+    public static event OnScoreIncrement 
+        balloonCrashPop, shotBalloonPop, friendlyMissilePop,
+        enemyLaserExplosion, enemyMineExplosion, enemyRamExplosion;
 
     public delegate void OnPlayerDeath();
     public static event OnPlayerDeath playerHasDied;
@@ -76,13 +78,19 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         boosterEffect = transform.GetChild(0).GetComponent<ParticleSystem>();
-        aSource = this.GetComponent<AudioSource>();
         //stationaryModeTimer = 0f;
         defaultLookRotateSpeed = lookRotateSpeed;
         SettingsMenu.mouseMoveToggle += ToggleDisableMouse;
+        SettingsMenu.sfxVolumeChange += SFXVolumeChange;
         Balloon.balloonPoppedByPCrash += PlayerPoppedDirectly;
         Balloon.balloonPoppedByPShot += PlayerPoppedByShooting;
+        Balloon.balloonPoppedByFMissile += PoppedByFriendlyMissile;
+        EnemyLaser.laserExplosion += ExplosionByLaser;
+        EnemyRam.ramExplosion += ExplosionByRam;
+        HomingMine.mineExplosion += ExplosionByMine;
+        
         boostTimer = 0f;
+        engineASource.volume = SettingsMenu.sfxVolume;
     }
 
     public void ReinitializeScreenCenter() {
@@ -95,6 +103,17 @@ public class Player : MonoBehaviour
         SettingsMenu.mouseMoveToggle -= ToggleDisableMouse;
         Balloon.balloonPoppedByPCrash -= PlayerPoppedDirectly;
         Balloon.balloonPoppedByPShot -= PlayerPoppedByShooting;
+        Balloon.balloonPoppedByFMissile -= PoppedByFriendlyMissile;
+        EnemyLaser.laserExplosion -= ExplosionByLaser;
+        EnemyRam.ramExplosion -= ExplosionByRam;
+        HomingMine.mineExplosion -= ExplosionByMine;
+    }
+
+    private void SFXVolumeChange(float newVal) {
+        if (engineASource != null)
+            engineASource.volume = newVal;
+        if(gunAudioSource!=null)
+            gunAudioSource.volume = newVal;
     }
 
     private void PlayerPoppedDirectly(int fuelValue, int scoreIncrement) {
@@ -104,8 +123,30 @@ public class Player : MonoBehaviour
 
     private void PlayerPoppedByShooting(int fuelValue, int scoreIncrement) {
         BoostFuelChange(fuelValue);
-        int temp = boostFuel + fuelValue;
         shotBalloonPop?.Invoke(scoreIncrement, boostFuel);
+    }
+    private void PoppedByFriendlyMissile(int fuelValue, int scoreIncrement)
+    {
+        BoostFuelChange(fuelValue);
+        friendlyMissilePop?.Invoke(scoreIncrement, boostFuel);
+    }
+
+    private void ExplosionByMine()
+    {
+        BoostFuelChange(1);
+        enemyMineExplosion?.Invoke(40,boostFuel);
+    }
+
+    private void ExplosionByRam()
+    {
+        BoostFuelChange(1);
+        enemyRamExplosion?.Invoke(40, boostFuel);
+    }
+
+    private void ExplosionByLaser()
+    {
+        BoostFuelChange(1);
+        enemyLaserExplosion?.Invoke(20, boostFuel);
     }
 
     // Update is called once per frame
@@ -151,7 +192,6 @@ public class Player : MonoBehaviour
                     playerBoosted?.Invoke(boostFuel);
                 }
                 boostTimer += Time.deltaTime;
-
                 
                 activeForwardSpeed = Mathf.Lerp(
                         activeForwardSpeed, boostSpeed,
@@ -266,15 +306,16 @@ public class Player : MonoBehaviour
     }
 
     private void PlayEngineSoundLoop(int clipIndex) {
-        if (aSource != null)
+        if (engineASource != null)
         {
-            if (aSource.clip != engineSounds[clipIndex])
+            if (engineASource.clip != engineSounds[clipIndex])
             {
-                aSource.clip = engineSounds[clipIndex];
+                engineASource.volume = SettingsMenu.sfxVolume;
+                engineASource.clip = engineSounds[clipIndex];
             }
-            if (!aSource.isPlaying)
+            if (!engineASource.isPlaying)
             {
-                aSource.Play();
+                engineASource.Play();
             }
         }
     }

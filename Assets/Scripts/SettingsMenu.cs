@@ -6,8 +6,9 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
-    [SerializeField] private AudioMixer mainAM;
-    [SerializeField] private Slider masterVSlider;
+    public static float musicVolume, sfxVolume;
+    //[SerializeField] private AudioMixer mainAM;
+    //[SerializeField] private Slider masterVSlider;
     [SerializeField] private Slider musicVSlider;
     [SerializeField] private Slider sfxVSlider;
     [SerializeField] private Toggle confineToggle, mouseMoveDisable;
@@ -15,38 +16,49 @@ public class SettingsMenu : MonoBehaviour
     public delegate void OnToggled(bool newState);
     public static event OnToggled mouseMoveToggle;
 
-    // Start is called before the first frame update
-    void Start()
+    public delegate void OnVolumeChanged(float newVolume);
+    public static event OnVolumeChanged musicVolumeChange, sfxVolumeChange;
+
+    void Awake()
     {
-        if (!PlayerPrefs.HasKey("masterVolume"))
+        if (!PlayerPrefs.HasKey("musicVolume"))
         {
-            mainAM.GetFloat("masterVolume", out float masterVolTemp);
-            mainAM.GetFloat("musicVolume", out float musicVolTemp);
-            mainAM.GetFloat("sfxVolume",out float sfxVolTemp);
-            PlayerPrefs.SetFloat("masterVolume", masterVolTemp);
-            PlayerPrefs.SetFloat("musicVolume", musicVolTemp);
-            PlayerPrefs.SetFloat("sfxVolume", sfxVolTemp);
-            masterVSlider.value = masterVolTemp;
-            musicVSlider.value = musicVolTemp;
-            sfxVSlider.value = sfxVolTemp;
-            Debug.Log("Tits"+ masterVSlider.value);
+            //mainAM.GetFloat("masterVolume", out float masterVolTemp);
+            //mainAM.GetFloat("musicVolume", out float musicVolTemp);
+            //mainAM.GetFloat("sfxVolume",out float sfxVolTemp);
+            //PlayerPrefs.SetFloat("masterVolume", masterVolume);
+
+            musicVolume = 0.3f;
+            sfxVolume = 0.10f;
+            PlayerPrefs.SetFloat("musicVolume", musicVolume);
+            PlayerPrefs.SetFloat("sfxVolume", sfxVolume);
+            //masterVSlider.value = masterVolume;
+            musicVSlider.value = musicVolume;
+            sfxVSlider.value = sfxVolume;
+            musicVolumeChange?.Invoke(musicVolume);
+            sfxVolumeChange?.Invoke(sfxVolume);
         }
         else {
-            float mastVol = PlayerPrefs.GetFloat("masterVolume");
+            // mastVol = PlayerPrefs.GetFloat("masterVolume");
             float musicVol = PlayerPrefs.GetFloat("musicVolume");
             float sfxVol = PlayerPrefs.GetFloat("sfxVolume");
-            if (mastVol > 0)
-            {
-                mainAM.SetFloat("masterVolume", Mathf.Log10(mastVol) * 20);
-                masterVSlider.value = mastVol;
-            }
-            if (musicVol > 0) {
-                mainAM.SetFloat("musicVolume", Mathf.Log10(musicVol) * 20);
+            //if (mastVol > 0)
+            //{
+            //    //mainAM.SetFloat("masterVolume", Mathf.Log10(mastVol) * 20);
+            //    masterVolume = mastVol;
+            //    masterVSlider.value = mastVol;
+            //}
+            if (musicVol >= 0) {
+                //mainAM.SetFloat("musicVolume", Mathf.Log10(musicVol) * 20);
+                musicVolume = musicVol;
                 musicVSlider.value = musicVol;
+                musicVolumeChange?.Invoke(musicVolume);
             }
-            if (sfxVol > 0) {
-                mainAM.SetFloat("sfxVolume", Mathf.Log10(sfxVol) * 20);
+            if (sfxVol >= 0) {
+                //mainAM.SetFloat("sfxVolume", Mathf.Log10(sfxVol) * 20);
+                sfxVolume = sfxVol;
                 sfxVSlider.value = sfxVol;
+                sfxVolumeChange?.Invoke(sfxVolume);
             }
         }
         int cursorLockTemp = PlayerPrefs.GetInt("cursorLock", -1);
@@ -78,30 +90,37 @@ public class SettingsMenu : MonoBehaviour
         while (mouseMoveToggle == null)
             yield return new WaitForSeconds(0.1f);
         mouseMoveToggle(state);
+        sfxVolumeChange?.Invoke(sfxVolume);
+        musicVolumeChange?.Invoke(musicVolume);
     }
 
-    public void ChangeMasterVolume() {
-        float sliderValue = masterVSlider.value;
-        mainAM.SetFloat("masterVolume", 
-            Mathf.Log10(sliderValue) * 20);
-        PlayerPrefs.SetFloat("masterVolume", sliderValue);
-        PlayerPrefs.Save();
-    }
+    //public void ChangeMasterVolume() {
+    //    float sliderValue = masterVSlider.value;
+    //    //mainAM.SetFloat("masterVolume", 
+    //    //    Mathf.Log10(sliderValue) * 20);
+    //    masterVolume = sliderValue;
+    //    PlayerPrefs.SetFloat("masterVolume", sliderValue);
+    //    PlayerPrefs.Save();
+    //}
     public void ChangeBGMVolume()
     {
         float sliderValue = musicVSlider.value;
-        mainAM.SetFloat("musicVolume",
-            Mathf.Log10(sliderValue) * 20);
+        //mainAM.SetFloat("musicVolume",
+        //    Mathf.Log10(sliderValue) * 20);
+        musicVolume = sliderValue;
         PlayerPrefs.SetFloat("musicVolume", sliderValue);
         PlayerPrefs.Save();
+        musicVolumeChange?.Invoke(sliderValue);
     }
     public void ChangeSFXVolume()
     {
         float sliderValue = sfxVSlider.value;
-        mainAM.SetFloat("sfxVolume",
-            Mathf.Log10(sliderValue) * 20);
+        //mainAM.SetFloat("sfxVolume",
+        //    Mathf.Log10(sliderValue) * 20);
+        sfxVolume = sliderValue;
         PlayerPrefs.SetFloat("sfxVolume", sliderValue);
         PlayerPrefs.Save();
+        sfxVolumeChange?.Invoke(sliderValue);
     }
 
     public void ToggleCursorConfined() {

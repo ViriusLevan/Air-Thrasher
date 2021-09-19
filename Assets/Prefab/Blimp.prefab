@@ -260,13 +260,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea9b7b218515d5f4cb0afcb0f644b0d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxFiringDistance: 35
+  maxFiringDistance: 45
   minePrefab: {fileID: 8665912597451024763, guid: a21ff36431e255443b3023eee5aff761, type: 3}
   mineSpawnPoint: {fileID: 2747124250641129432}
   layingInterval: 8
-  heightTarget: 65
-  upwardFloatForce: 50
-  restingFloatForce: 10
+  heightTarget: 275
+  upwardFloatForce: 70
+  restingFloatForce: 25
   explosionPrefab: {fileID: 5186878382678297276, guid: e43b922957ed3c04f9b9822ede29792f, type: 3}
   explosionRadius: 15
   explosionForce: 20
@@ -398,6 +398,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deflationAnimator: {fileID: 4955634372160805993}
+  mObjectGO: {fileID: 0}
 --- !u!23 &2109123077853731380
 MeshRenderer:
   m_ObjectHideFlags: 0

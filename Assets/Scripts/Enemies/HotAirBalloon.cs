@@ -121,7 +121,7 @@ public class HotAirBalloon : MonoBehaviour, IExplodable, IEnemy
 
     private void AdjustFloat() {
         //Float height target
-        if (this.transform.position.y >= target.position.y+2)
+        if (this.transform.position.y >= target.position.y)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
         }

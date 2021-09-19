@@ -176,6 +176,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
                     laserColliders[i].transform.localPosition = new Vector3(0, 0, (maxFiringDistance / 2) + 3);
                     laserColliders[i].transform.localScale = new Vector3(3.5f, 3.5f, maxFiringDistance);
                 }
+                laserAudio[i].volume = SettingsMenu.sfxVolume;
                 laserAudio[i].UnPause();
                 if (!laserAudio[i].isPlaying)
                     laserAudio[i].Play();
@@ -301,12 +302,12 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
             dead = true;
             foreach (Transform child in pollenChildren)
             {
-                child.GetComponent<Pollen_Child>().enabled = true;
+                child.SetParent(null);
                 child.GetComponent<HingeJoint>().breakForce = 0.001f;
                 child.GetComponent<Rigidbody>().AddForce(
                     new Vector3(Random.Range(0.001f,0.1f), Random.Range(0.001f, 0.1f), Random.Range(0.001f, 0.1f))
                     );
-                child.SetParent(null);
+                child.GetComponent<Pollen_Child>().enabled = true;
             }
         }
     }
