@@ -5029,6 +5029,7 @@ GameObject:
   - component: {fileID: 8311540276381832203}
   - component: {fileID: 8311540276381832197}
   - component: {fileID: 365020255603961194}
+  - component: {fileID: 5817704832104115398}
   m_Layer: 3
   m_Name: Player_Plane
   m_TagString: Player
@@ -5238,7 +5239,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5278,3 +5279,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!81 &5817704832104115398
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311540276381832201}
+  m_Enabled: 1

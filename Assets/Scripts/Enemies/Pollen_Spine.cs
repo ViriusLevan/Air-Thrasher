@@ -150,6 +150,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
 
     private void ToggleLaser()
     {
+        if (dead) return;
 
         if (isFiringLaser)
         {

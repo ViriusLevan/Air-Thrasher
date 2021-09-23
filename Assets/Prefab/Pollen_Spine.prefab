@@ -547,7 +547,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -14.000006, y: 0.1499939, z: -0.6000004}
+  m_ConnectedAnchor: {x: -14.000006, y: 0.14999962, z: -0.6000004}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -818,7 +818,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 7.000001, y: 0.1499939, z: 2.800004}
+  m_ConnectedAnchor: {x: 7.000001, y: 0.14999962, z: 2.800004}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -919,12 +919,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 100
-  DopplerLevel: 1
+  Priority: 128
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -932,8 +932,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.003704071
-      value: 0.25571823
+      time: 0
+      value: 0.50110245
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -957,7 +957,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -987,7 +987,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.25045642
+      value: 0.52122366
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1562,12 +1562,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 100
-  DopplerLevel: 1
+  Priority: 128
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -1575,8 +1575,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.003704071
-      value: 0.25571823
+      time: 0
+      value: 0.50110245
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1600,7 +1600,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1630,7 +1630,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.25045642
+      value: 0.52122366
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4026,7 +4026,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 14.000006, y: 0.1499939, z: -0.59999657}
+  m_ConnectedAnchor: {x: 14.000006, y: 0.14999962, z: -0.59999657}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -4484,12 +4484,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 100
-  DopplerLevel: 1
+  Priority: 128
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -4497,8 +4497,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.003704071
-      value: 0.25571823
+      time: 0
+      value: 0.50110245
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4522,7 +4522,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4552,7 +4552,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.25045642
+      value: 0.52122366
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4869,7 +4869,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -7.000001, y: 0.1499939, z: 2.800002}
+  m_ConnectedAnchor: {x: -7.000001, y: 0.14999962, z: 2.800002}
   m_UseSpring: 0
   m_Spring:
     spring: 0
@@ -5099,12 +5099,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 100
-  DopplerLevel: 1
+  Priority: 128
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5112,8 +5112,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.003704071
-      value: 0.25571823
+      time: 0
+      value: 0.50110245
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5137,7 +5137,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5167,7 +5167,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.25045642
+      value: 0.52122366
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5254,12 +5254,12 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 100
-  DopplerLevel: 1
+  Priority: 128
+  DopplerLevel: 0
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 500
   Pan2D: 0
-  rolloffMode: 2
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -5267,8 +5267,8 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.003704071
-      value: 0.25571823
+      time: 0
+      value: 0.50110245
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5292,7 +5292,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5322,7 +5322,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.25045642
+      value: 0.52122366
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -5579,7 +5579,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.1499939, z: 2.8000033}
+  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.14999962, z: 2.8000033}
   m_UseSpring: 0
   m_Spring:
     spring: 0
