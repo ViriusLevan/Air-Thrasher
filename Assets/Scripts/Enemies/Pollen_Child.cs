@@ -237,6 +237,7 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
         numberOfBalloons -= 1;
         if (numberOfBalloons <= 0)
         {
+            balloonAnimator.SetBool("deflated", true);
             floatForce.force = new Vector3(0, 0, 0);
             dead = true;
         }
