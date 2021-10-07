@@ -5111,6 +5111,7 @@ GameObject:
   - component: {fileID: 8311540276381832197}
   - component: {fileID: 365020255603961194}
   - component: {fileID: 5817704832104115398}
+  - component: {fileID: 7098857007140831552}
   m_Layer: 3
   m_Name: Player_Plane
   m_TagString: Player
@@ -5200,7 +5201,6 @@ MonoBehaviour:
   forwardAcceleration: 1
   boostSpeed: 150
   rollSpeed: 60
-  rollInput: 0
   lookRotateSpeed: 45
   stationaryRotateSpeed: 90
   boostFuel: 50
@@ -5369,3 +5369,53 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8311540276381832201}
   m_Enabled: 1
+--- !u!114 &7098857007140831552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311540276381832201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 212176b3bbfe4634da6d55cfbbce6549, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f18f9264-ac02-4fa1-aa11-0574b684a0f0
+    m_ActionName: Gameplay/Boost/Brake[/Keyboard/s,/Keyboard/w,/XInputControllerWindows/leftStick/down,/XInputControllerWindows/leftStick/up]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0cd430d7-ea48-4872-93e0-fc70db496bc9
+    m_ActionName: Gameplay/Roll[/Keyboard/a,/Keyboard/d,/XInputControllerWindows/leftStick/left,/XInputControllerWindows/leftStick/right]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d519bd56-0b51-4125-8c76-9431f5a20e6b
+    m_ActionName: Gameplay/Pitch & Yaw[/Mouse/delta,/XInputControllerWindows/rightStick,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 73d81381-6cc8-4f9f-8fad-d9eaa8741494
+    m_ActionName: Gameplay/Fire[/Keyboard/enter,/XInputControllerWindows/rightShoulder,/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 138a3fab-3387-4e66-8266-90b713d37bf7
+    m_ActionName: Gameplay/Pause[/Keyboard/p,/XInputControllerWindows/start,/Mouse/middleButton]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gameplay
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}

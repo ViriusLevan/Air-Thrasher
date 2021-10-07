@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.InputSystem;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -14,7 +16,6 @@ public class Player : MonoBehaviour
     private float boostTimer;
     [Header("Rolling Movement")]
     [SerializeField] private float rollSpeed;
-    [SerializeField] private float rollInput;
     [Header("Look Speed")]
     [SerializeField] private float lookRotateSpeed;
     [SerializeField] private float stationaryRotateSpeed;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     private float arrowHorizontal, arrowVertical;
     private bool overrideMouse, fullyDisableMouse=false;
 
+    private float verticalInput, rollInput;
     private Vector2 lookInput, screenCenter, mouseDistance;
     private Rigidbody rb;
 
@@ -45,6 +47,7 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioSource gunAudioSource;
     private float gunCooldown=0.2f;
     private float gunCDTimer;
+    private bool fireInput = false;
 
     [Header("Player Death")]
     [SerializeField] private GameObject explosionPrefab;
@@ -68,6 +71,39 @@ public class Player : MonoBehaviour
 
     public delegate void OnPlayerDeath();
     public static event OnPlayerDeath playerHasDied;
+    #region Input
+    //public void InputPitchYaw(InputAction.CallbackContext ctx)
+    //{
+    //    var inputValue = ctx.ReadValue<Vector2>();
+    //    lookInput = new Vector2(inputValue.x, inputValue.y);
+    //}
+    //public void InputBoostBrake(InputAction.CallbackContext ctx)
+    //{
+    //    var inputValue = ctx.ReadValue<float>();
+    //    verticalInput = inputValue;
+    //}
+    //public void InputRoll(InputAction.CallbackContext ctx)
+    //{
+    //    var inputValue = ctx.ReadValue<float>();
+    //    rollInput = inputValue * -1;
+    //}
+    //public void InputFire(InputAction.CallbackContext ctx)
+    //{
+    //    fireInput = true;
+    //}
+    #endregion
+
+    private Controls_Plane planeInput;
+
+    private void Awake()
+    {
+        planeInput = new Controls_Plane();
+        planeInput.Gameplay.Enable();
+        //planeInput.Gameplay.PitchYaw.performed += InputPitchYaw;
+        //planeInput.Gameplay.BoostBrake.performed += InputBoostBrake;
+        //planeInput.Gameplay.Roll.performed += InputRoll;
+        //planeInput.Gameplay.Fire.performed += InputFire;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -154,28 +190,39 @@ public class Player : MonoBehaviour
     {
         if (Time.timeScale > 0 && !dead)
         {
-            lookInput.x = Input.mousePosition.x;
-            lookInput.y = Input.mousePosition.y;
-            mouseDistance.x = 
-                (lookInput.x - screenCenter.x) / screenCenter.y;
-            mouseDistance.y = 
-                (lookInput.y - screenCenter.y) / screenCenter.y;
-
-            mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
-
-            arrowHorizontal = Input.GetAxisRaw("ArrowHorizontal");
-            arrowVertical = Input.GetAxisRaw("ArrowVertical");
-
-            if (arrowHorizontal != 0 || arrowVertical != 0)
+            //lookInput.x = Input.mousePosition.x;
+            //lookInput.y = Input.mousePosition.y;
+            lookInput = planeInput.Gameplay.PitchYaw.ReadValue<Vector2>();
+            //Debug.Log(lookInput);
+            if (fullyDisableMouse)
             {
-                overrideMouse = true;
+                lookInput = Vector2.ClampMagnitude(lookInput, 1f);
             }
-            else {
-                overrideMouse = false;
+            else
+            {
+                mouseDistance.x =
+                    (lookInput.x - screenCenter.x) / screenCenter.y;
+                mouseDistance.y =
+                    (lookInput.y - screenCenter.y) / screenCenter.y;
+                //mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
+                lookInput = Vector2.ClampMagnitude(mouseDistance, 1f);
             }
+            Debug.Log(lookInput);
+            //arrowHorizontal = Input.GetAxisRaw("ArrowHorizontal");
+            //arrowVertical = Input.GetAxisRaw("ArrowVertical");
 
-            rollInput = Input.GetAxisRaw("Horizontal") * -1;
-            float verticalInput = Input.GetAxisRaw("Vertical");
+            //if (arrowHorizontal != 0 || arrowVertical != 0)
+            //{
+            //    overrideMouse = true;
+            //}
+            //else {
+            //    overrideMouse = false;
+            //}
+
+            rollInput = planeInput.Gameplay.Roll.ReadValue<float>()*-1;
+            verticalInput = planeInput.Gameplay.BoostBrake.ReadValue<float>();
+            //rollInput = Input.GetAxisRaw("Horizontal") * -1;
+            //float verticalInput = Input.GetAxisRaw("Vertical");
 
             if (verticalInput > 0 && boostFuel > 0)
             {//Boost
@@ -241,7 +288,9 @@ public class Player : MonoBehaviour
                 activeForwardSpeed = 0;
             }
 
-            if ((Input.GetButtonDown("Fire1") || Input.GetButton("Fire1"))
+            fireInput = planeInput.Gameplay.Fire.ReadValue<float>()>0 ? true : false;
+
+            if (fireInput
                 && (gunCDTimer <= 0)
                 && (boostFuel > 0))
             {
@@ -260,35 +309,54 @@ public class Player : MonoBehaviour
             rb.velocity = (transform.forward * activeForwardSpeed);
 
             //Set the angular velocity of the Rigidbody(rotating around the Y axis, 100 deg / sec)
-            if (overrideMouse || fullyDisableMouse)
-            {
-                Vector3 m_EulerAngleVelocity2 =
-                    new Vector3(
-                        -arrowVertical * lookRotateSpeed,
-                    arrowHorizontal * lookRotateSpeed,
-                    rollInput * rollSpeed
-                    );
+            //if (overrideMouse || fullyDisableMouse)
+            //{
+            //    Vector3 m_EulerAngleVelocity2 =
+            //        new Vector3(
+            //            -arrowVertical * lookRotateSpeed,
+            //        arrowHorizontal * lookRotateSpeed,
+            //        rollInput * rollSpeed
+            //        );
 
-                Quaternion deltaRotation2 = Quaternion.Euler(m_EulerAngleVelocity2 * Time.fixedDeltaTime);
-                rb.MoveRotation(rb.rotation * deltaRotation2);
-            }
-            else
-            {
-                Vector3 m_EulerAngleVelocity =
-                    new Vector3(
-                        -mouseDistance.y * lookRotateSpeed,
-                    mouseDistance.x * lookRotateSpeed,
-                    rollInput * rollSpeed
-                    );
+            //    Quaternion deltaRotation2 = Quaternion.Euler(m_EulerAngleVelocity2 * Time.fixedDeltaTime);
+            //    rb.MoveRotation(rb.rotation * deltaRotation2);
+            //}
+            //else
+            //{
+            Vector3 m_EulerAngleVelocity =
+                new Vector3(
+                    -lookInput.y * lookRotateSpeed,
+                lookInput.x * lookRotateSpeed,
+                rollInput * rollSpeed
+                );
 
-                Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
-                rb.MoveRotation(rb.rotation * deltaRotation);
-            }
+            Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
+            rb.MoveRotation(rb.rotation * deltaRotation);
+            //}
+
+            //Debug.Log(lookInput);
         }
     }
 
     public void ToggleDisableMouse(bool newState) {
         fullyDisableMouse = newState;
+        if (newState)
+        {
+            // Get binding mask for "PC_Scheme_Gamepad_Xbox".
+            string bindingGroup = planeInput.controlSchemes.
+                First(x => x.name == "Keyboard").bindingGroup;
+            string bindingGroup2 = planeInput.controlSchemes.
+                First(x => x.name == "Gamepad").bindingGroup;
+            String[] bindingGs = { bindingGroup, bindingGroup2 };
+            // Set as binding mask on actions. What this does is cause any binding that doesn't
+            // match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
+            // group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
+            // look up the name like above), only bindings in that control scheme will be used.
+            planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
+        }
+        else {
+            planeInput.bindingMask = null;
+        }
     }
 
     private void FireGun() {

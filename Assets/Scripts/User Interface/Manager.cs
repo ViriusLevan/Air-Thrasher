@@ -30,6 +30,21 @@ public class Manager : MonoBehaviour
     private bool[] medalAlreadyUnlocked;
     public bool paused;
 
+    public void InputPause() {
+        if (pauseTimer <= 0)
+        {
+            if (!dead)
+            {
+                PauseORResume();
+                pauseTimer = pauseCooldown;
+            }
+            else
+            {
+                RestartGame();
+            }
+        }
+    }
+
     private void Awake()
     {
         Player.initializeUI += InitializeUI;
@@ -41,8 +56,9 @@ public class Manager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {   //TODO remove this
+    {   //TODO remove these
         //Cursor.visible = false;
+        //Time.timeScale = 0;
 
         medalAlreadyUnlocked = new bool[3];
         music.volume = SettingsMenu.musicVolume;
@@ -110,26 +126,14 @@ public class Manager : MonoBehaviour
     {
         //Doesn't use an event since speed is changed almost constantly
         speedText.text = ((int)player.GetComponent<Player>().GetActiveForwardSpeed()).ToString();
-        if (Input.GetAxisRaw("Cancel") == 1
-                && pauseTimer <= 0)
-        {
-            if (!dead)
-            {
-                PauseORResume();
-                pauseTimer = pauseCooldown;
-            }
-            else {
-                RestartGame();
-            }
-        }
-        else if (pauseTimer > 0)
-        {
-            pauseTimer -= Time.unscaledDeltaTime;
-        }
-
+        
         if (!dead) {
             runtime += Time.deltaTime;
             timeText.text = runtime.ToString("0.00");
+        }
+        if (pauseTimer > 0)
+        {
+            pauseTimer -= Time.unscaledDeltaTime;
         }
     }
 
