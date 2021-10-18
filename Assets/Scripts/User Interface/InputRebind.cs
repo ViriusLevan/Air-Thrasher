@@ -237,6 +237,8 @@ public class InputRebind : MonoBehaviour
         if (!ResolveActionAndBinding(out var action, out var bindingIndex))
             return;
 
+        m_Action.action.Disable();
+
         // If the binding is a composite, we need to rebind each part in turn.
         if (action.bindings[bindingIndex].isComposite)
         {
@@ -248,6 +250,7 @@ public class InputRebind : MonoBehaviour
         {
             PerformInteractiveRebind(action, bindingIndex);
         }
+
     }
 
     private void PerformInteractiveRebind(InputAction action, int bindingIndex, bool allCompositeParts = false)
@@ -312,6 +315,16 @@ public class InputRebind : MonoBehaviour
         m_RebindStartEvent?.Invoke(this, m_RebindOperation);
 
         m_RebindOperation.Start();
+
+        StartCoroutine(WaitForCompletionToEnable());
+    }
+
+    private IEnumerator WaitForCompletionToEnable() {
+        while (!m_RebindOperation.completed)
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+        m_Action.action.Enable();
     }
 
     protected void OnEnable()

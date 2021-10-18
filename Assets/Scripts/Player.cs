@@ -161,6 +161,7 @@ public class Player : MonoBehaviour
         BoostFuelChange(fuelValue);
         shotBalloonPop?.Invoke(scoreIncrement, boostFuel);
     }
+
     private void PoppedByFriendlyMissile(int fuelValue, int scoreIncrement)
     {
         BoostFuelChange(fuelValue);
