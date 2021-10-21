@@ -215,6 +215,14 @@ public class InputRebind : MonoBehaviour
         if (!ResolveActionAndBinding(out var action, out var bindingIndex))
             return;
 
+        // Check for duplicate bindings before resetting to default, and if found, swap the two controls.
+
+        if (SwapResetBindings(action, bindingIndex))
+        {
+            UpdateBindingDisplay();
+            return;
+        }
+
         if (action.bindings[bindingIndex].isComposite)
         {
             // It's a composite. Remove overrides from part bindings.
@@ -232,12 +240,11 @@ public class InputRebind : MonoBehaviour
     /// Initiate an interactive rebind that lets the player actuate a control to choose a new binding
     /// for the action.
     /// </summary>
+    /// 
     public void StartInteractiveRebind()
     {
         if (!ResolveActionAndBinding(out var action, out var bindingIndex))
             return;
-
-        m_Action.action.Disable();
 
         // If the binding is a composite, we need to rebind each part in turn.
         if (action.bindings[bindingIndex].isComposite)
@@ -263,11 +270,18 @@ public class InputRebind : MonoBehaviour
             m_RebindOperation = null;
         }
 
+        //Disable action before starting rebind
+        if(m_Action.action.enabled)
+            m_Action.action.Disable();
+
         // Configure the rebind.
         m_RebindOperation = action.PerformInteractiveRebinding(bindingIndex)
+            .WithControlsExcluding("<Pointer>/position")//Example of excluding a control button
+            .WithCancelingThrough("<Keyboard>/escape")
             .OnCancel(
                 operation =>
                 {
+                    action.Enable();
                     m_RebindStopEvent?.Invoke(this, operation);
                     m_RebindOverlay?.SetActive(false);
                     UpdateBindingDisplay();
@@ -278,6 +292,15 @@ public class InputRebind : MonoBehaviour
                 {
                     m_RebindOverlay?.SetActive(false);
                     m_RebindStopEvent?.Invoke(this, operation);
+
+                    if (CheckDuplicateBindings(action, bindingIndex, allCompositeParts)) {
+                        m_Action.action.RemoveBindingOverride(bindingIndex);
+                        CleanUp();
+                        PerformInteractiveRebind(action, bindingIndex, allCompositeParts);
+                        return;
+                    }
+
+
                     UpdateBindingDisplay();
                     CleanUp();
 
@@ -288,7 +311,11 @@ public class InputRebind : MonoBehaviour
                         var nextBindingIndex = bindingIndex + 1;
                         if (nextBindingIndex < action.bindings.Count && action.bindings[nextBindingIndex].isPartOfComposite)
                             PerformInteractiveRebind(action, nextBindingIndex, true);
+                        else
+                            action.Enable();
                     }
+                        else
+                            action.Enable();
                 });
 
         // If it's a part binding, show the name of the part in the UI.
@@ -315,16 +342,71 @@ public class InputRebind : MonoBehaviour
         m_RebindStartEvent?.Invoke(this, m_RebindOperation);
 
         m_RebindOperation.Start();
-
-        StartCoroutine(WaitForCompletionToEnable());
     }
 
-    private IEnumerator WaitForCompletionToEnable() {
-        while (!m_RebindOperation.completed)
-        {
-            yield return new WaitForSeconds(0.5f);
+    private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompositeParts=false) {
+        InputBinding newBinding = action.bindings[bindingIndex];
+        foreach (InputBinding binding in action.actionMap.bindings) {
+            if (binding.action == newBinding.action) {
+                continue;
+            }
+            if (binding.effectivePath == newBinding.effectivePath) {
+                Debug.Log("Duplicate binding found: "+newBinding.effectivePath);
+                return true;
+            }
         }
-        m_Action.action.Enable();
+        //check composite
+        if (allCompositeParts) {
+            for (int i = 1; i < bindingIndex; i++)
+            {
+                if (action.bindings[i].effectivePath == newBinding.effectivePath)
+                {
+                    Debug.Log("Duplicate binding found: " + newBinding.effectivePath);
+                    return true;
+                }
+            }
+        }
+
+        //no dupe
+        return false;
+    }
+
+    /// <summary>
+
+    /// Check for duplicate rebindings when the binding is going to be set to default.
+
+    /// </summary>
+
+    /// <param name="action">InputAction we are resetting.</param>
+
+    /// <param name="bindingIndex">Current index of the control we are rebinding.</param>
+
+    /// <returns></returns>
+    private bool SwapResetBindings(InputAction action, int bindingIndex)
+    {
+        // Cache a reference to the current binding.
+        InputBinding newBinding = action.bindings[bindingIndex];
+
+        // Check all of the bindings in the current action map to make sure there are no duplicates.
+        for (int i = 0; i < action.actionMap.bindings.Count; ++i)
+        {
+
+            InputBinding binding = action.actionMap.bindings[i];
+            if (binding.action == newBinding.action)
+            {
+                continue;
+            }
+
+            if (binding.effectivePath == newBinding.path)
+            {
+                Debug.Log("Duplicate binding found for reset to default: " + newBinding.effectivePath);
+                // Swap the two actions.
+                action.actionMap.FindAction(binding.action).ApplyBindingOverride(i, newBinding.overridePath);
+                action.RemoveBindingOverride(bindingIndex);
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void OnEnable()
@@ -432,6 +514,12 @@ public class InputRebind : MonoBehaviour
     }
 
 #endif
+
+    private void Start()
+    {
+        UpdateActionLabel();
+        UpdateBindingDisplay();
+    }
 
     private void UpdateActionLabel()
     {

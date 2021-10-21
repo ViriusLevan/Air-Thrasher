@@ -93,12 +93,13 @@ public class Player : MonoBehaviour
     //}
     #endregion
 
-    private Controls_Plane planeInput;
+    //private Controls_Plane planeInput;
+    private PlayerInput playerInput;
 
     private void Awake()
     {
-        planeInput = new Controls_Plane();
-        planeInput.Gameplay.Enable();
+        //planeInput = new Controls_Plane();
+        //planeInput.Gameplay.Enable();
         //planeInput.Gameplay.PitchYaw.performed += InputPitchYaw;
         //planeInput.Gameplay.BoostBrake.performed += InputBoostBrake;
         //planeInput.Gameplay.Roll.performed += InputRoll;
@@ -108,6 +109,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerInput = GetComponent <PlayerInput>();
         initializeUI?.Invoke(boostFuel, health);
         screenCenter.x = Screen.width*.5f;
         screenCenter.y = Screen.height*.5f;
@@ -193,7 +195,8 @@ public class Player : MonoBehaviour
         {
             //lookInput.x = Input.mousePosition.x;
             //lookInput.y = Input.mousePosition.y;
-            lookInput = planeInput.Gameplay.PitchYaw.ReadValue<Vector2>();
+            //lookInput = planeInput.Gameplay.PitchYaw.ReadValue<Vector2>();
+            lookInput = playerInput.actions["Pitch & Yaw"].ReadValue<Vector2>();
             //Debug.Log(lookInput);
             if (fullyDisableMouse)
             {
@@ -208,7 +211,7 @@ public class Player : MonoBehaviour
                 //mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
                 lookInput = Vector2.ClampMagnitude(mouseDistance, 1f);
             }
-            Debug.Log(lookInput);
+            //Debug.Log(lookInput);
             //arrowHorizontal = Input.GetAxisRaw("ArrowHorizontal");
             //arrowVertical = Input.GetAxisRaw("ArrowVertical");
 
@@ -220,8 +223,10 @@ public class Player : MonoBehaviour
             //    overrideMouse = false;
             //}
 
-            rollInput = planeInput.Gameplay.Roll.ReadValue<float>()*-1;
-            verticalInput = planeInput.Gameplay.BoostBrake.ReadValue<float>();
+            //rollInput = planeInput.Gameplay.Roll.ReadValue<float>()*-1;
+            //verticalInput = planeInput.Gameplay.BoostBrake.ReadValue<float>();
+            rollInput = playerInput.actions["Roll"].ReadValue<float>()*-1;
+            verticalInput = playerInput.actions["Acceleration"].ReadValue<float>();
             //rollInput = Input.GetAxisRaw("Horizontal") * -1;
             //float verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -289,7 +294,8 @@ public class Player : MonoBehaviour
                 activeForwardSpeed = 0;
             }
 
-            fireInput = planeInput.Gameplay.Fire.ReadValue<float>()>0 ? true : false;
+            //fireInput = planeInput.Gameplay.Fire.ReadValue<float>()>0 ? true : false;
+            fireInput = playerInput.actions["Fire"].ReadValue<float>()>0 ? true : false;
 
             if (fireInput
                 && (gunCDTimer <= 0)
@@ -340,24 +346,24 @@ public class Player : MonoBehaviour
     }
 
     public void ToggleDisableMouse(bool newState) {
-        fullyDisableMouse = newState;
-        if (newState)
-        {
-            // Get binding mask for "PC_Scheme_Gamepad_Xbox".
-            string bindingGroup = planeInput.controlSchemes.
-                First(x => x.name == "Keyboard").bindingGroup;
-            string bindingGroup2 = planeInput.controlSchemes.
-                First(x => x.name == "Gamepad").bindingGroup;
-            String[] bindingGs = { bindingGroup, bindingGroup2 };
-            // Set as binding mask on actions. What this does is cause any binding that doesn't
-            // match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
-            // group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
-            // look up the name like above), only bindings in that control scheme will be used.
-            planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
-        }
-        else {
-            planeInput.bindingMask = null;
-        }
+        //fullyDisableMouse = newState;
+        //if (newState)
+        //{
+        //    // Get binding mask for "PC_Scheme_Gamepad_Xbox".
+        //    string bindingGroup = planeInput.controlSchemes.
+        //        First(x => x.name == "Keyboard").bindingGroup;
+        //    string bindingGroup2 = planeInput.controlSchemes.
+        //        First(x => x.name == "Gamepad").bindingGroup;
+        //    String[] bindingGs = { bindingGroup, bindingGroup2 };
+        //    // Set as binding mask on actions. What this does is cause any binding that doesn't
+        //    // match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
+        //    // group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
+        //    // look up the name like above), only bindings in that control scheme will be used.
+        //    planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
+        //}
+        //else {
+        //    planeInput.bindingMask = null;
+        //}
     }
 
     private void FireGun() {

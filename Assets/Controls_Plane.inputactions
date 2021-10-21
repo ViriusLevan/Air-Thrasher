@@ -6,12 +6,13 @@
             "id": "1dc02c6d-2b79-40a2-bdaa-749a03789034",
             "actions": [
                 {
-                    "name": "Boost/Brake",
+                    "name": "Acceleration",
                     "type": "Value",
                     "id": "f18f9264-ac02-4fa1-aa11-0574b684a0f0",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Roll",
@@ -19,7 +20,8 @@
                     "id": "0cd430d7-ea48-4872-93e0-fc70db496bc9",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Pitch & Yaw",
@@ -27,7 +29,8 @@
                     "id": "d519bd56-0b51-4125-8c76-9431f5a20e6b",
                     "expectedControlType": "Vector2",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Fire",
@@ -35,7 +38,8 @@
                     "id": "73d81381-6cc8-4f9f-8fad-d9eaa8741494",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Pause",
@@ -43,7 +47,8 @@
                     "id": "138a3fab-3387-4e66-8266-90b713d37bf7",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -54,7 +59,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Boost/Brake",
+                    "action": "Acceleration",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -64,8 +69,8 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Boost/Brake",
+                    "groups": "KBM",
+                    "action": "Acceleration",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -75,8 +80,8 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
-                    "action": "Boost/Brake",
+                    "groups": "KBM",
+                    "action": "Acceleration",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -87,7 +92,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Boost/Brake",
+                    "action": "Acceleration",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -98,7 +103,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Boost/Brake",
+                    "action": "Acceleration",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -109,7 +114,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Boost/Brake",
+                    "action": "Acceleration",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -130,7 +135,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -141,7 +146,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Roll",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -185,7 +190,7 @@
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Mouse",
+                    "groups": "Mouse;KBM",
                     "action": "Pitch & Yaw",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -207,7 +212,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Pitch & Yaw",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -218,7 +223,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Pitch & Yaw",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -229,7 +234,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Pitch & Yaw",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -240,7 +245,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Pitch & Yaw",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -262,7 +267,7 @@
                     "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -284,7 +289,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM;Mouse",
                     "action": "Fire",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -293,9 +298,9 @@
                     "name": "",
                     "id": "7540c136-997c-42f8-aa5c-8999526ac1c8",
                     "path": "<Keyboard>/p",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -304,7 +309,7 @@
                     "name": "",
                     "id": "8da023c1-3776-43c1-ac86-772b5e581691",
                     "path": "<Gamepad>/start",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Pause",
@@ -315,9 +320,9 @@
                     "name": "",
                     "id": "2483f143-a8df-47f5-8b11-bd4e77e127f9",
                     "path": "<Mouse>/middleButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard",
+                    "groups": "KBM;Mouse",
                     "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -327,12 +332,17 @@
     ],
     "controlSchemes": [
         {
-            "name": "Keyboard",
-            "bindingGroup": "Keyboard",
+            "name": "KBM",
+            "bindingGroup": "KBM",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
                     "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
