@@ -23,6 +23,7 @@ public class Manager : MonoBehaviour
     [SerializeField] private Image achievementSprite;
     [SerializeField] private Sprite[] achievementSprites;
     [SerializeField] private AudioSource music;
+    [SerializeField] private CircleSpeedIndicator circleSpeed;
     private int score, playerMaxHealth, highScore, pollenKillCount;
     private float playerMaxBoost, pauseTimer=0f, 
         pauseCooldown=0.5f, runtime=0f;
@@ -125,7 +126,9 @@ public class Manager : MonoBehaviour
     void Update()
     {
         //Doesn't use an event since speed is changed almost constantly
-        speedText.text = ((int)player.GetComponent<Player>().GetActiveForwardSpeed()).ToString();
+        float playerSpeed = player.GetComponent<Player>().GetActiveForwardSpeed();
+        speedText.text = (playerSpeed).ToString("0");
+        circleSpeed.SpeedChange(playerSpeed);
         
         if (!dead) {
             runtime += Time.deltaTime;
