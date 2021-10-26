@@ -63,53 +63,31 @@ public class Player : MonoBehaviour
     public delegate void OnPlayerInitialized(int boostValue, int healthValuem);
     public static event OnPlayerInitialized initializeUI;
 
-    public delegate void OnFuelChanged(int newBoostValue);
-    public static event OnFuelChanged playerFiredGun, playerBoosted;
+    public enum FuelUsedCause 
+    { 
+        FiredGun, Boosted
+    }
+    public delegate void OnFuelChanged(int newBoostValue, FuelUsedCause cause);
+    public static event OnFuelChanged onFuelUsed;
 
-    public delegate void OnHealthChanged(int newHealthValue);
-    public static event OnHealthChanged playerHitByMissile, playerHitByMine, playerHitByLaser,playerHitByRam;
+    public enum HealthChangedCause 
+    { 
+        EnemyMissile, EnemyMine, EnemyLaser, EnemyRam
+    }
+    public delegate void OnHealthChanged(int newHealthValue, HealthChangedCause cause);
+    public static event OnHealthChanged onHealthChanged;
 
-    public delegate void OnScoreIncrement(int scoreIncrement, int updatedFuel);
-    public static event OnScoreIncrement 
-        balloonCrashPop, shotBalloonPop, friendlyMissilePop,
-        enemyLaserExplosion, enemyMineExplosion, enemyRamExplosion;
+    public enum ScoreIncrementCause 
+    { 
+        FratricideMissile, FratricideMine, FratricideLaser, FratricideRam
+    }
+    public delegate void OnScoreIncrement(int scoreIncrement, int updatedFuel, ScoreIncrementCause cause);
+    public static event OnScoreIncrement fratricide;
 
     public delegate void OnPlayerDeath();
     public static event OnPlayerDeath playerHasDied;
-    #region Input
-    //public void InputPitchYaw(InputAction.CallbackContext ctx)
-    //{
-    //    var inputValue = ctx.ReadValue<Vector2>();
-    //    lookInput = new Vector2(inputValue.x, inputValue.y);
-    //}
-    //public void InputBoostBrake(InputAction.CallbackContext ctx)
-    //{
-    //    var inputValue = ctx.ReadValue<float>();
-    //    verticalInput = inputValue;
-    //}
-    //public void InputRoll(InputAction.CallbackContext ctx)
-    //{
-    //    var inputValue = ctx.ReadValue<float>();
-    //    rollInput = inputValue * -1;
-    //}
-    //public void InputFire(InputAction.CallbackContext ctx)
-    //{
-    //    fireInput = true;
-    //}
-    #endregion
 
-    //private Controls_Plane planeInput;
     private PlayerInput playerInput;
-
-    private void Awake()
-    {
-        //planeInput = new Controls_Plane();
-        //planeInput.Gameplay.Enable();
-        //planeInput.Gameplay.PitchYaw.performed += InputPitchYaw;
-        //planeInput.Gameplay.BoostBrake.performed += InputBoostBrake;
-        //planeInput.Gameplay.Roll.performed += InputRoll;
-        //planeInput.Gameplay.Fire.performed += InputFire;
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -125,13 +103,10 @@ public class Player : MonoBehaviour
         defaultLookRotateSpeed = lookRotateSpeed;
         SettingsMenu.mouseMoveToggle += ToggleDisableMouse;
         SettingsMenu.sfxVolumeChange += SFXVolumeChange;
-        Balloon.balloonPoppedByPCrash += PlayerPoppedDirectly;
-        Balloon.balloonPoppedByPShot += PlayerPoppedByShooting;
-        Balloon.balloonPoppedByFMissile += PoppedByFriendlyMissile;
-        EnemyLaser.laserExplosion += ExplosionByLaser;
-        EnemyRam.ramExplosion += ExplosionByRam;
-        HomingMine.mineExplosion += ExplosionByMine;
-        
+        HomingMine.fratricide += FratricideExplosion;
+        EnemyRam.fratricide += FratricideExplosion;
+        EnemyLaser.fratricide += FratricideExplosion;
+
         boostTimer = 0f;
         engineASource.volume = SettingsMenu.sfxVolume;
     }
@@ -144,12 +119,9 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         SettingsMenu.mouseMoveToggle -= ToggleDisableMouse;
-        Balloon.balloonPoppedByPCrash -= PlayerPoppedDirectly;
-        Balloon.balloonPoppedByPShot -= PlayerPoppedByShooting;
-        Balloon.balloonPoppedByFMissile -= PoppedByFriendlyMissile;
-        EnemyLaser.laserExplosion -= ExplosionByLaser;
-        EnemyRam.ramExplosion -= ExplosionByRam;
-        HomingMine.mineExplosion -= ExplosionByMine;
+        HomingMine.fratricide -= FratricideExplosion;
+        EnemyRam.fratricide -= FratricideExplosion;
+        EnemyLaser.fratricide -= FratricideExplosion;
     }
 
     private void SFXVolumeChange(float newVal) {
@@ -159,52 +131,30 @@ public class Player : MonoBehaviour
             gunAudioSource.volume = newVal;
     }
 
-    #region Events
-    private void PlayerPoppedDirectly(int fuelValue, int scoreIncrement) {
-        BoostFuelChange(fuelValue);
-        balloonCrashPop?.Invoke(scoreIncrement, boostFuel);
+    private void FratricideExplosion(ScoreIncrementCause fratricideCause) {
+        IncrementBoostFuel(1);
+        switch (fratricideCause) {
+            case ScoreIncrementCause.FratricideMissile:
+                fratricide?.Invoke(40, boostFuel, ScoreIncrementCause.FratricideMissile);
+                break;
+            case ScoreIncrementCause.FratricideMine:
+                fratricide?.Invoke(40, boostFuel, ScoreIncrementCause.FratricideMine);
+                break;
+            case ScoreIncrementCause.FratricideLaser:
+                fratricide?.Invoke(20, boostFuel, ScoreIncrementCause.FratricideLaser);
+                break;
+            case ScoreIncrementCause.FratricideRam:
+                fratricide?.Invoke(40, boostFuel, ScoreIncrementCause.FratricideRam);
+                break;
+        }
     }
-
-    private void PlayerPoppedByShooting(int fuelValue, int scoreIncrement) {
-        BoostFuelChange(fuelValue);
-        shotBalloonPop?.Invoke(scoreIncrement, boostFuel);
-    }
-
-    private void PoppedByFriendlyMissile(int fuelValue, int scoreIncrement)
-    {
-        BoostFuelChange(fuelValue);
-        friendlyMissilePop?.Invoke(scoreIncrement, boostFuel);
-    }
-
-    private void ExplosionByMine()
-    {
-        BoostFuelChange(1);
-        enemyMineExplosion?.Invoke(40,boostFuel);
-    }
-
-    private void ExplosionByRam()
-    {
-        BoostFuelChange(1);
-        enemyRamExplosion?.Invoke(40, boostFuel);
-    }
-
-    private void ExplosionByLaser()
-    {
-        BoostFuelChange(1);
-        enemyLaserExplosion?.Invoke(20, boostFuel);
-    }
-    #endregion
 
     // Update is called once per frame
     void Update()
     {
         if (Time.timeScale > 0 && !dead)
         {
-            //lookInput.x = Input.mousePosition.x;
-            //lookInput.y = Input.mousePosition.y;
-            //lookInput = planeInput.Gameplay.PitchYaw.ReadValue<Vector2>();
             lookInput = playerInput.actions["Pitch & Yaw"].ReadValue<Vector2>();
-            //Debug.Log(lookInput);
             if (fullyDisableMouse)
             {
                 lookInput = Vector2.ClampMagnitude(lookInput, 1f);
@@ -215,12 +165,8 @@ public class Player : MonoBehaviour
                     (lookInput.x - screenCenter.x) / screenCenter.y;
                 mouseDistance.y =
                     (lookInput.y - screenCenter.y) / screenCenter.y;
-                //mouseDistance = Vector2.ClampMagnitude(mouseDistance, 1f);
                 lookInput = Vector2.ClampMagnitude(mouseDistance, 1f);
             }
-            //Debug.Log(lookInput);
-            //arrowHorizontal = Input.GetAxisRaw("ArrowHorizontal");
-            //arrowVertical = Input.GetAxisRaw("ArrowVertical");
 
             //if (arrowHorizontal != 0 || arrowVertical != 0)
             //{
@@ -230,12 +176,8 @@ public class Player : MonoBehaviour
             //    overrideMouse = false;
             //}
 
-            //rollInput = planeInput.Gameplay.Roll.ReadValue<float>()*-1;
-            //verticalInput = planeInput.Gameplay.BoostBrake.ReadValue<float>();
             rollInput = playerInput.actions["Roll"].ReadValue<float>()*-1;
             verticalInput = playerInput.actions["Acceleration"].ReadValue<float>();
-            //rollInput = Input.GetAxisRaw("Horizontal") * -1;
-            //float verticalInput = Input.GetAxisRaw("Vertical");
 
             if ((verticalInput>0 || cruiseControl>0) && boostFuel > 0)
             {//Boost
@@ -243,13 +185,13 @@ public class Player : MonoBehaviour
                     && activeForwardSpeed == forwardSpeed)
                 {
                     boostFuel -= 2;
-                    playerBoosted?.Invoke(boostFuel);
+                    onFuelUsed?.Invoke(boostFuel, FuelUsedCause.Boosted);
                 }
                 else if (boostTimer >= 1f)
                 {
                     boostTimer -= 1f;
                     boostFuel -= 2;
-                    playerBoosted?.Invoke(boostFuel);
+                    onFuelUsed?.Invoke(boostFuel, FuelUsedCause.Boosted);
                 }
                 boostTimer += Time.deltaTime;
                 activeForwardSpeed = Mathf.Lerp(
@@ -259,7 +201,6 @@ public class Player : MonoBehaviour
 
                 PlayEngineSoundLoop(1);
                 AdjustBoosterEffect(beStartSpeedBoost);
-                //stationaryModeTimer = 0;
                 lookRotateSpeed = defaultLookRotateSpeed;
             }
             else if (verticalInput == -1 || cruiseControl<0)
@@ -271,17 +212,6 @@ public class Player : MonoBehaviour
                 AdjustBoosterEffect(beStartSpeedNormal);
                 lookRotateSpeed = stationaryRotateSpeed;
 
-                //if (stationaryModeTimer == 0)
-                //{
-                //    boostFuel -= 3;
-                //}
-                //else {
-                //    if (stationaryModeTimer >= 1f) {
-                //        boostFuel -= 3;
-                //        stationaryModeTimer -= 1f;
-                //    }
-                //}
-                //stationaryModeTimer += Time.deltaTime;
             }
             else
             {//Normal
@@ -293,7 +223,6 @@ public class Player : MonoBehaviour
 
                 PlayEngineSoundLoop(0);
                 AdjustBoosterEffect(beStartSpeedNormal);
-                //stationaryModeTimer = 0;
                 lookRotateSpeed = defaultLookRotateSpeed;
             }
 
@@ -329,7 +258,6 @@ public class Player : MonoBehaviour
                 Debug.Log("dodge input");
             }
 
-            //fireInput = planeInput.Gameplay.Fire.ReadValue<float>()>0 ? true : false;
             fireInput = playerInput.actions["Fire"].ReadValue<float>()>0 ? true : false;
 
             if (fireInput
@@ -343,33 +271,11 @@ public class Player : MonoBehaviour
                 gunCDTimer -= Time.deltaTime;
             }
         }
-        //transform.position += (transform.forward * activeForwardSpeed * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
         if (!dead) { 
-
-            
-            //if (rb.velocity.magnitude < speedLimit) {
-            //    rb.AddForce(transform.forward * forwardAcceleration);
-            //}
-            //Set the angular velocity of the Rigidbody(rotating around the Y axis, 100 deg / sec)
-            //if (overrideMouse || fullyDisableMouse)
-            //{
-            //    Vector3 m_EulerAngleVelocity2 =
-            //        new Vector3(
-            //            -arrowVertical * lookRotateSpeed,
-            //        arrowHorizontal * lookRotateSpeed,
-            //        rollInput * rollSpeed
-            //        );
-
-            //    Quaternion deltaRotation2 = Quaternion.Euler(m_EulerAngleVelocity2 * Time.fixedDeltaTime);
-            //    rb.MoveRotation(rb.rotation * deltaRotation2);
-            //}
-            //else
-            //{
-            
             rb.velocity = (transform.forward * activeForwardSpeed + dodgeVector);
             Vector3 m_EulerAngleVelocity =
                 new Vector3(
@@ -389,12 +295,10 @@ public class Player : MonoBehaviour
                 dodgeVector = Vector3.zero;
                 dodgeDurationTimer = dodgeDuration;
             }
-            //}
-
-            //Debug.Log(lookInput);
         }
     }
 
+    //TODO fix this
     public void ToggleDisableMouse(bool newState) {
         //fullyDisableMouse = newState;
         //if (newState)
@@ -422,7 +326,7 @@ public class Player : MonoBehaviour
         boostFuel -= 1;
         PlayRandomGunFiringSound();
         gunCDTimer = gunCooldown;
-        playerFiredGun?.Invoke(boostFuel);
+        onFuelUsed?.Invoke(boostFuel, FuelUsedCause.FiredGun);
     }
 
     private void PlayRandomGunFiringSound() {
@@ -453,8 +357,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void BoostFuelChange(int addedValue) {
-
+    public void IncrementBoostFuel(int addedValue) {
         boostFuel = boostFuel + addedValue;
         if (boostFuel > 100) { 
             boostFuel = 100; 
@@ -463,36 +366,33 @@ public class Player : MonoBehaviour
         }
     }
 
-    public int GetMaxHealth() {
-        return maxHealth;
-    }
 
-    public void EnemyMineHit(int hpReduction) {
-        playerHitByMine?.Invoke(health-hpReduction);
-        ReduceHealth(hpReduction);
-    }
+    public void HitByEnemy(HealthChangedCause cause) {
 
-    public void EnemyMissileHit(int hpReduction)
-    {
-        playerHitByMissile?.Invoke(health - hpReduction);
-        ReduceHealth(hpReduction);
+        switch (cause) {
+            case HealthChangedCause.EnemyMine:
+                onHealthChanged?.Invoke(health - 1, HealthChangedCause.EnemyMine);
+                ReduceHealth(1);
+                break;
+            case HealthChangedCause.EnemyMissile:
+                onHealthChanged?.Invoke(health - 1, HealthChangedCause.EnemyMissile);
+                ReduceHealth(1);
+                break;
+            case HealthChangedCause.EnemyLaser:
+                onHealthChanged?.Invoke(health - 1, HealthChangedCause.EnemyLaser);
+                ReduceHealth(1);
+                break;
+            case HealthChangedCause.EnemyRam:
+                onHealthChanged?.Invoke(health - 2, HealthChangedCause.EnemyRam);
+                ReduceHealth(2);
+                if ((activeForwardSpeed - 100) < 0)
+                    activeForwardSpeed = 0;
+                else
+                    activeForwardSpeed -= 100;
+                break;
+        }
+    
     }
-
-    public void EnemyLaserHit(int hpReduction)
-    {
-        playerHitByLaser?.Invoke(health - hpReduction);
-        ReduceHealth(hpReduction);
-    }
-
-    public void EnemyRamHit(int hpReduction) {
-        playerHitByRam?.Invoke(health - hpReduction);
-        ReduceHealth(hpReduction);
-        if ((activeForwardSpeed - 100) < 0)
-            activeForwardSpeed = 0;
-        else
-            activeForwardSpeed -= 100;
-    }
-
 
     private void ReduceHealth(int amount) {
         health -= amount;
@@ -535,12 +435,10 @@ public class Player : MonoBehaviour
     public float GetActiveForwardSpeed() {
         return activeForwardSpeed;
     }
+    public int GetBoostFuel() { return boostFuel; }
 
-    public float GetBoostMax() {
-        return boostMax;
-    }
+    public int GetMaxHealth() { return maxHealth; }
+    public float GetBoostMax() { return boostMax;}
 
-    public Rigidbody GetRB() {
-        return rb;
-    }
+    public Rigidbody GetRB() { return rb;}
 }

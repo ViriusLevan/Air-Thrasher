@@ -30,8 +30,8 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
     private bool active = false;
 
 
-    public delegate void OnMineKill();
-    public static event OnMineKill mineExplosion;
+    public delegate void OnMineKill(Player.ScoreIncrementCause cause);
+    public static event OnMineKill fratricide;
 
     // Start is called before the first frame update
     void Start()
@@ -120,11 +120,12 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
         if (collision.gameObject.TryGetComponent(out IExplodable explosive)
             && !collision.gameObject.TryGetComponent(out Pollen_Spine pSpine)) {
             explosive.Explode();
-            mineExplosion?.Invoke();
+            fratricide?.Invoke(Player.ScoreIncrementCause.FratricideMine);
         }
         else if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Player>().EnemyMineHit(1);
+            collision.gameObject.GetComponent<Player>()
+                .HitByEnemy(Player.HealthChangedCause.EnemyMine);
             Explode();
         }
     }

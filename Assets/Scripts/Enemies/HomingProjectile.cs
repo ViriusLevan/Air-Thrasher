@@ -76,13 +76,14 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     {
         if (collision.gameObject.tag == "Player")
         {
-            collision.gameObject.GetComponent<Player>().EnemyMissileHit(1);
+            collision.gameObject.GetComponent<Player>().HitByEnemy(Player.HealthChangedCause.EnemyMissile);
             Explode();
         }
-        else if (collision.gameObject.TryGetComponent(out Balloon bal))
-        {
-            bal.CrashedByFriendlyMissile();
-        }
+        //Missiles now no longer pop balloons
+        //else if (collision.gameObject.TryGetComponent(out Balloon bal))
+        //{
+        //    bal.CrashedByFratricide();
+        //}
         else
         {
             Explode();

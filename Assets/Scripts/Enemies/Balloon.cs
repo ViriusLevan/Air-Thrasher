@@ -14,10 +14,12 @@ public class Balloon : MonoBehaviour, ICrashable
     private SphereCollider sCollider;
     private CapsuleCollider cCollider;
 
-    public delegate void BalloonPopped(int boostValue, int score);
-    public static event BalloonPopped balloonPoppedByPCrash;
-    public static event BalloonPopped balloonPoppedByPShot;
-    public static event BalloonPopped balloonPoppedByFMissile;
+    public enum PopCause
+    {
+        RammedByPlayer, ShotByPlayer, Fratricide
+    }
+    public delegate void BalloonPopped(int boostValue, int score, PopCause cause);
+    public static event BalloonPopped balloonPopped;
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +52,7 @@ public class Balloon : MonoBehaviour, ICrashable
         {
             if (collision.gameObject.tag == "Player")
             {
-                balloonPoppedByPCrash?.Invoke(7,100);
+                balloonPopped?.Invoke(7,100, PopCause.RammedByPlayer);
                 Crash();
             }
         }
@@ -77,13 +79,14 @@ public class Balloon : MonoBehaviour, ICrashable
 
     public void CrashedByPlayerBullet()
     {
-        balloonPoppedByPShot?.Invoke(1,35);
+        balloonPopped.Invoke(1,35, PopCause.ShotByPlayer);
         Crash();
     }
 
-    public void CrashedByFriendlyMissile() {
-        balloonPoppedByFMissile?.Invoke(1,40);
-        Crash();
-    }
+    //Missiles no longer pop balloons
+    //public void CrashedByFratricide() {
+    //    balloonPopped?.Invoke(1,40, PopCause.Fratricide);
+    //    Crash();
+    //}
     
 }

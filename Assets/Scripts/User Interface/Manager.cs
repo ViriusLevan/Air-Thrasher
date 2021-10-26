@@ -12,7 +12,7 @@ public class Manager : MonoBehaviour
 
     [SerializeField] private TMP_Text speedText, scoreText, boostText, 
         healthText, finalScoreText, highScoreText, timeText, medalPoint, cruiseControlText;
-    [SerializeField] private GameObject playerGO;
+    [SerializeField] private GameObject player;
     [SerializeField] private Image healthBar, boostBar;
     [SerializeField] private GameObject finalPanel;
     [SerializeField] private UI_EventText eventText;
@@ -24,12 +24,14 @@ public class Manager : MonoBehaviour
     [SerializeField] private Sprite[] achievementSprites;
     [SerializeField] private AudioSource music;
     [SerializeField] private CircleSpeedIndicator circleSpeed;
+    private Player currentPlayer;
     private int score, playerMaxHealth, highScore, pollenKillCount;
     private float playerMaxBoost, pauseTimer=0f, 
         pauseCooldown=0.5f, runtime=0f;
     private bool dead=false; //bruh
     private bool[] medalAlreadyUnlocked;
     public bool paused;
+
 
     public void InputPause() {
         if (pauseTimer <= 0)
@@ -64,57 +66,42 @@ public class Manager : MonoBehaviour
         medalAlreadyUnlocked = new bool[3];
         music.volume = SettingsMenu.musicVolume;
         pollenKillCount = 0;
-        if (playerGO == null)
-            playerGO = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) { 
+            player = GameObject.FindGameObjectWithTag("Player"); 
+        }
         Time.timeScale = 1;
-        Player.playerFiredGun += PlayerFiredGun;
-        Player.playerBoosted += PlayerBoosted;
-        Player.playerHitByMissile += PlayerHitByMissile;
-        Player.playerHitByMine += PlayerHitByMine;
-        Player.playerHitByLaser += PlayerHitByLaser;
-        Player.playerHitByRam += PlayerHitByRam;
-
-        Player.balloonCrashPop += PlayerDirectlyPopped;
-        Player.shotBalloonPop += PlayerShotPopped;
-        Player.friendlyMissilePop += FriendlyMissilePopped;
-        Player.enemyMineExplosion += ExplosionByMine;
-        Player.enemyLaserExplosion += ExplosionByLaser;
-        Player.enemyRamExplosion += ExplosionByRam;
+        Player.onFuelUsed += OnFuelUsed;
+        Player.onHealthChanged += PlayerHealthChanged;
+        Balloon.balloonPopped += BalloonPopped;
+        Player.fratricide += FratricideExplosion;
 
         Player.playerHasDied += GameOver;
         Pollen_Spine.spineDeath += IncrementSpineKillCount;
-        NewgroundsMedals.MedalCalledback += DisplayMedalUnlock;
         SettingsMenu.musicVolumeChange += ChangeMusicVolume;
+        //
+        NewgroundsMedals.MedalCalledback += DisplayMedalUnlock;
     }
 
     private void OnDestroy()
     {
-        Player.playerFiredGun -= PlayerFiredGun;
-        Player.playerBoosted -= PlayerBoosted;
-        Player.playerHitByMissile -= PlayerHitByMissile;
-        Player.playerHitByMine -= PlayerHitByMine;
-        Player.playerHitByLaser -= PlayerHitByLaser;
-        Player.playerHitByRam -= PlayerHitByRam;
-
-        Player.balloonCrashPop -= PlayerDirectlyPopped;
-        Player.shotBalloonPop -= PlayerShotPopped;
-        Player.friendlyMissilePop -= FriendlyMissilePopped;
-        Player.enemyMineExplosion -= ExplosionByMine;
-        Player.enemyLaserExplosion -= ExplosionByLaser;
-        Player.enemyRamExplosion -= ExplosionByRam;
-
+        Player.onFuelUsed -= OnFuelUsed;
+        Player.onHealthChanged -= PlayerHealthChanged;
+        Balloon.balloonPopped -= BalloonPopped;
+        Player.fratricide -= FratricideExplosion;
         Player.playerHasDied -= GameOver;
         Player.initializeUI -= InitializeUI;
         Pollen_Spine.spineDeath -= IncrementSpineKillCount;
-        NewgroundsMedals.MedalCalledback -= DisplayMedalUnlock;
         SettingsMenu.musicVolumeChange -= ChangeMusicVolume;
+        //
+        NewgroundsMedals.MedalCalledback -= DisplayMedalUnlock;
     }
     private void InitializeUI(int boost, int health)
     {
-        if (playerGO != null)
+        if (player != null)
         {
-            playerMaxHealth = playerGO.GetComponent<Player>().GetMaxHealth();
-            playerMaxBoost = playerGO.GetComponent<Player>().GetBoostMax();
+            currentPlayer = player.GetComponent<Player>();
+            playerMaxHealth = currentPlayer.GetMaxHealth();
+            playerMaxBoost = currentPlayer.GetBoostMax();
         }
         ChangeBoostDisplay(boost);
         ChangeHealthDisplay(health);
@@ -126,10 +113,10 @@ public class Manager : MonoBehaviour
     void Update()
     {
         //Doesn't use an event since speed is changed almost constantly
-        float playerSpeed = playerGO.GetComponent<Rigidbody>().velocity.magnitude;
+        float playerSpeed = currentPlayer.GetRB().velocity.magnitude;
         speedText.text = (playerSpeed).ToString("0");
         circleSpeed.SpeedChange(playerSpeed);
-        cruiseControlText.text = playerGO.GetComponent<Player>().cruiseControl.ToString();
+        cruiseControlText.text = currentPlayer.cruiseControl.ToString();
         if (!dead) {
             runtime += Time.deltaTime;
             timeText.text = runtime.ToString("0.00");
@@ -144,16 +131,17 @@ public class Manager : MonoBehaviour
         music.volume = newVal;
     }
 
-    private void PlayerFiredGun(int updatedFuelValue)
-    {
-        eventText?.DisplayAnEvent("Fired Gun", 0);
-        ChangeBoostDisplay(updatedFuelValue);
-    }
-
-    private void PlayerBoosted(int updatedFuelValue)
-    {
-        eventText?.DisplayAnEvent("Boosted", 0);
-        ChangeBoostDisplay(updatedFuelValue);
+    private void OnFuelUsed(int updatedFuelValue, Player.FuelUsedCause cause) {
+        switch (cause) {
+            case Player.FuelUsedCause.Boosted:
+                eventText?.DisplayAnEvent("Boosted", 0);
+                ChangeBoostDisplay(updatedFuelValue);
+                break;
+            case Player.FuelUsedCause.FiredGun:
+                eventText?.DisplayAnEvent("Fired Gun", 0);
+                ChangeBoostDisplay(updatedFuelValue);
+                break;
+        }
     }
 
     private void ChangeBoostDisplay(int boostFuel) {
@@ -162,27 +150,23 @@ public class Manager : MonoBehaviour
         boostBar.fillAmount = boostFill;
     }
 
-    private void PlayerHitByMine(int healthAmount)
-    {
-        eventText?.DisplayAnEvent("Mine Hit", 1);
-        ChangeHealthDisplay(healthAmount);
-    }
-
-    private void PlayerHitByMissile(int healthAmount)
-    {
-        eventText?.DisplayAnEvent("Missile Hit", 1);
-        ChangeHealthDisplay(healthAmount);
-    }
-    private void PlayerHitByLaser(int healthAmount)
-    {
-        eventText?.DisplayAnEvent("Laser Hit", 1);
-        ChangeHealthDisplay(healthAmount);
-    }
-
-    private void PlayerHitByRam(int healthAmount)
-    {
-        eventText?.DisplayAnEvent("Ram Hit", 1);
-        ChangeHealthDisplay(healthAmount);
+    private void PlayerHealthChanged(int currentHealth, Player.HealthChangedCause cause) {
+        switch (cause)
+        {
+            case Player.HealthChangedCause.EnemyMine:
+                eventText?.DisplayAnEvent("Mine Hit", 1);
+                break;
+            case Player.HealthChangedCause.EnemyMissile:
+                eventText?.DisplayAnEvent("Missile Hit", 1);
+                break;
+            case Player.HealthChangedCause.EnemyLaser:
+                eventText?.DisplayAnEvent("Laser Hit", 1);
+                break;
+            case Player.HealthChangedCause.EnemyRam:
+                eventText?.DisplayAnEvent("Ram Hit", 1);
+                break;
+        }
+        ChangeHealthDisplay(currentHealth);
     }
 
     private void ChangeHealthDisplay(int healthAmount) {
@@ -192,48 +176,43 @@ public class Manager : MonoBehaviour
         healthBar.fillAmount = healthFill;
     }
 
-    private void PlayerDirectlyPopped
-        (int scoreIncrease, int updatedFuel)
+    private void BalloonPopped(int addedFuel, int scoreIncrease
+        , Balloon.PopCause cause)
     {
-        eventText?.DisplayAnEvent("Direct Pop", 2);
+        switch (cause) {
+            case Balloon.PopCause.RammedByPlayer:
+                eventText?.DisplayAnEvent("Direct Pop", 2);
+                break;
+            case Balloon.PopCause.ShotByPlayer:
+                eventText?.DisplayAnEvent("Shot-Up", 2);
+                break;
+            //case Balloon.PopCause.Fratricide:
+            //    eventText?.DisplayAnEvent("Missile Pop", 3);
+            //    break;
+        }
+        currentPlayer.IncrementBoostFuel(addedFuel);
         IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
+        ChangeBoostDisplay(currentPlayer.GetBoostFuel());
     }
 
-    private void PlayerShotPopped
-        (int scoreIncrease, int updatedFuel)
-    {
-        eventText?.DisplayAnEvent("Shot-Up", 2);
-        IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
-    }
-
-    private void FriendlyMissilePopped
-        (int scoreIncrease, int updatedFuel) {
-        eventText?.DisplayAnEvent("Missile Fratricide", 3);
-        IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
-    }
-
-    private void ExplosionByMine(int scoreIncrease, int updatedFuel)
-    {
-        eventText?.DisplayAnEvent("Mine Fratricide", 3);
-        IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
-    }
-
-    private void ExplosionByRam(int scoreIncrease, int updatedFuel)
-    {
-        eventText?.DisplayAnEvent("Ram Fratricide", 3);
-        IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
-    }
-
-    private void ExplosionByLaser(int scoreIncrease, int updatedFuel)
-    {
-        eventText?.DisplayAnEvent("Laser Fratricide", 3);
-        IncreaseScore(scoreIncrease);
-        ChangeBoostDisplay(updatedFuel);
+    private void FratricideExplosion(int scoreIncrease, int updatedFuel, Player.ScoreIncrementCause cause) {
+        switch (cause) {
+            case Player.ScoreIncrementCause.FratricideMine:
+                eventText?.DisplayAnEvent("Mine Fratricide", 3);
+                IncreaseScore(scoreIncrease);
+                ChangeBoostDisplay(updatedFuel);
+                break;
+            case Player.ScoreIncrementCause.FratricideLaser:
+                eventText?.DisplayAnEvent("Laser Fratricide", 3);
+                IncreaseScore(scoreIncrease);
+                ChangeBoostDisplay(updatedFuel);
+                break;
+            case Player.ScoreIncrementCause.FratricideRam:
+                eventText?.DisplayAnEvent("Ram Fratricide", 3);
+                IncreaseScore(scoreIncrease);
+                ChangeBoostDisplay(updatedFuel);
+                break;
+        }
     }
 
     private void IncreaseScore(int amount) {
@@ -334,7 +313,7 @@ public class Manager : MonoBehaviour
 
     public void ReinitPlayerScreenVariable()
     {
-        playerGO.GetComponent<Player>().ReinitializeScreenCenter();
+        currentPlayer.ReinitializeScreenCenter();
     }
 
 }

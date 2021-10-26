@@ -7,8 +7,8 @@ public class EnemyLaser : MonoBehaviour
     private float countUp=0f;
     [SerializeField]private GameObject parent;
 
-    public delegate void OnLaserKill();
-    public static event OnLaserKill laserExplosion;
+    public delegate void OnLaserKill(Player.ScoreIncrementCause cause);
+    public static event OnLaserKill fratricide;
 
     private void OnTriggerStay(Collider other)
     {
@@ -16,14 +16,14 @@ public class EnemyLaser : MonoBehaviour
             && other.gameObject.TryGetComponent(out IExplodable explosive)
             && !other.gameObject.TryGetComponent(out Pollen_Spine pSpine)) {
             explosive.Explode();//explodes every explodable but a fellow pollenSpine
-            laserExplosion?.Invoke();
+            fratricide?.Invoke(Player.ScoreIncrementCause.FratricideLaser);
         }else if (other.gameObject.tag == "Player") {
             countUp += Time.deltaTime;
             if (countUp >= 0.35f)
             {
                 countUp -= 0.35f;
                 other.gameObject.
-                    GetComponent<Player>().EnemyLaserHit(1);
+                    GetComponent<Player>().HitByEnemy(Player.HealthChangedCause.EnemyLaser);
             }
         }
     }
