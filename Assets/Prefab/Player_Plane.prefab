@@ -4851,7 +4851,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4816306804464628010
 Transform:
   m_ObjectHideFlags: 0
@@ -5202,7 +5202,7 @@ MonoBehaviour:
   boostSpeed: 150
   rollSpeed: 60
   lookRotateSpeed: 45
-  stationaryRotateSpeed: 90
+  stationaryRotateSpeed: 135
   boostFuel: 50
   boostMax: 100
   health: 10
@@ -5223,6 +5223,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 24ae7470e9c58e84dab987acd5537310, type: 3}
   gunAudioSource: {fileID: 5736183001886707225}
   explosionPrefab: {fileID: 181321737664714833, guid: 97685a6154683bf40a4848b3f08e0cd6, type: 3}
+  cruiseControl: 0
 --- !u!65 &8311540276381832196
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5411,9 +5412,29 @@ MonoBehaviour:
     m_ActionId: 73d81381-6cc8-4f9f-8fad-d9eaa8741494
     m_ActionName: Gameplay/Fire[/Keyboard/enter,/XInputControllerWindows/rightShoulder,/Mouse/leftButton]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Manager, Assembly-CSharp
+        m_MethodName: InputPause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 138a3fab-3387-4e66-8266-90b713d37bf7
     m_ActionName: Gameplay/Pause[/Keyboard/p,/XInputControllerWindows/start,/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7625f319-6699-4093-9769-c03e3f109a01
+    m_ActionName: Gameplay/Dodge[/Keyboard/f,/Keyboard/g]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 284bf7a8-bbf6-429b-bf33-8455ee583e66
+    m_ActionName: Gameplay/CruiseControl[/Keyboard/y,/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Gameplay

@@ -45,13 +45,18 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private AudioClip[] gunFireClips;
     [SerializeField] private AudioSource gunAudioSource;
-    private float gunCooldown=0.2f;
-    private float gunCDTimer;
+    private float gunCooldown=0.2f, gunCDTimer;
     private bool fireInput = false;
 
     [Header("Player Death")]
     [SerializeField] private GameObject explosionPrefab;
     private bool dead = false;
+
+
+    private Vector3 dodgeVector = Vector3.zero;
+    private float dodgeCooldown = 0.6f, dodgeCDTimer, dodgeInput
+        , dodgeDuration = 0.3f, dodgeDurationTimer, cruiseControlInput, dodgeSpeed=500;
+    public short cruiseControl=0;
 
     //private float stationaryModeTimer;
 
@@ -154,6 +159,7 @@ public class Player : MonoBehaviour
             gunAudioSource.volume = newVal;
     }
 
+    #region Events
     private void PlayerPoppedDirectly(int fuelValue, int scoreIncrement) {
         BoostFuelChange(fuelValue);
         balloonCrashPop?.Invoke(scoreIncrement, boostFuel);
@@ -187,6 +193,7 @@ public class Player : MonoBehaviour
         BoostFuelChange(1);
         enemyLaserExplosion?.Invoke(20, boostFuel);
     }
+    #endregion
 
     // Update is called once per frame
     void Update()
@@ -230,7 +237,7 @@ public class Player : MonoBehaviour
             //rollInput = Input.GetAxisRaw("Horizontal") * -1;
             //float verticalInput = Input.GetAxisRaw("Vertical");
 
-            if (verticalInput > 0 && boostFuel > 0)
+            if ((verticalInput>0 || cruiseControl>0) && boostFuel > 0)
             {//Boost
                 if (boostTimer == 0
                     && activeForwardSpeed == forwardSpeed)
@@ -245,7 +252,6 @@ public class Player : MonoBehaviour
                     playerBoosted?.Invoke(boostFuel);
                 }
                 boostTimer += Time.deltaTime;
-                
                 activeForwardSpeed = Mathf.Lerp(
                         activeForwardSpeed, boostSpeed,
                         forwardAcceleration * Time.deltaTime
@@ -256,13 +262,15 @@ public class Player : MonoBehaviour
                 //stationaryModeTimer = 0;
                 lookRotateSpeed = defaultLookRotateSpeed;
             }
-            else if (verticalInput == -1)
+            else if (verticalInput == -1 || cruiseControl<0)
             {//Stop
                 activeForwardSpeed = Mathf.Lerp(
                         activeForwardSpeed, 0,
                         forwardAcceleration * Time.deltaTime * 2
                         );
                 AdjustBoosterEffect(beStartSpeedNormal);
+                lookRotateSpeed = stationaryRotateSpeed;
+
                 //if (stationaryModeTimer == 0)
                 //{
                 //    boostFuel -= 3;
@@ -274,10 +282,10 @@ public class Player : MonoBehaviour
                 //    }
                 //}
                 //stationaryModeTimer += Time.deltaTime;
-                lookRotateSpeed = stationaryRotateSpeed;
             }
             else
             {//Normal
+                cruiseControl = 0;
                 activeForwardSpeed = Mathf.Lerp(
                         activeForwardSpeed, 1 * forwardSpeed,
                         forwardAcceleration * 2 * Time.deltaTime
@@ -289,9 +297,36 @@ public class Player : MonoBehaviour
                 lookRotateSpeed = defaultLookRotateSpeed;
             }
 
+            //Stop cruise control if it detects input in the opposite direction
+            if ((cruiseControl > 0 && verticalInput < 0)
+                || (cruiseControl < 0 && verticalInput > 0))
+            {
+                cruiseControl = 0;
+            }
+            cruiseControlInput = playerInput.actions["CruiseControl"].ReadValue<float>();
+            if (cruiseControlInput > 0 && cruiseControl < 1)
+            {
+                cruiseControl = 1;
+            }
+            else if (cruiseControlInput < 0 && cruiseControl > -1) 
+            {
+                cruiseControl = -1;
+            }
+
             if (activeForwardSpeed < 0)
             {//No reverse force allowed
                 activeForwardSpeed = 0;
+            }
+
+            dodgeInput = playerInput.actions["Dodge"].ReadValue<float>();
+            dodgeCDTimer -= Time.deltaTime;
+            
+            if (dodgeInput != 0 && dodgeCDTimer <= 0)
+            {
+                dodgeDurationTimer = dodgeDuration;
+                dodgeCDTimer = dodgeCooldown;
+                dodgeVector = transform.right * dodgeSpeed * dodgeInput;
+                Debug.Log("dodge input");
             }
 
             //fireInput = planeInput.Gameplay.Fire.ReadValue<float>()>0 ? true : false;
@@ -310,11 +345,15 @@ public class Player : MonoBehaviour
         }
         //transform.position += (transform.forward * activeForwardSpeed * Time.deltaTime);
     }
+
     private void FixedUpdate()
     {
         if (!dead) { 
-            rb.velocity = (transform.forward * activeForwardSpeed);
 
+            
+            //if (rb.velocity.magnitude < speedLimit) {
+            //    rb.AddForce(transform.forward * forwardAcceleration);
+            //}
             //Set the angular velocity of the Rigidbody(rotating around the Y axis, 100 deg / sec)
             //if (overrideMouse || fullyDisableMouse)
             //{
@@ -330,15 +369,26 @@ public class Player : MonoBehaviour
             //}
             //else
             //{
+            
+            rb.velocity = (transform.forward * activeForwardSpeed + dodgeVector);
             Vector3 m_EulerAngleVelocity =
                 new Vector3(
                     -lookInput.y * lookRotateSpeed,
                 lookInput.x * lookRotateSpeed,
                 rollInput * rollSpeed
                 );
-
             Quaternion deltaRotation = Quaternion.Euler(m_EulerAngleVelocity * Time.fixedDeltaTime);
             rb.MoveRotation(rb.rotation * deltaRotation);
+
+            if (dodgeVector != Vector3.zero)
+            {
+                dodgeDurationTimer -= Time.fixedDeltaTime;
+            }
+            if (dodgeDurationTimer <= 0)
+            {
+                dodgeVector = Vector3.zero;
+                dodgeDurationTimer = dodgeDuration;
+            }
             //}
 
             //Debug.Log(lookInput);

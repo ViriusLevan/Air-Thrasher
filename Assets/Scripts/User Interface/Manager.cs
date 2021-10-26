@@ -11,8 +11,8 @@ public class Manager : MonoBehaviour
 {
 
     [SerializeField] private TMP_Text speedText, scoreText, boostText, 
-        healthText, finalScoreText, highScoreText, timeText, medalPoint;
-    [SerializeField] private GameObject player;
+        healthText, finalScoreText, highScoreText, timeText, medalPoint, cruiseControlText;
+    [SerializeField] private GameObject playerGO;
     [SerializeField] private Image healthBar, boostBar;
     [SerializeField] private GameObject finalPanel;
     [SerializeField] private UI_EventText eventText;
@@ -64,8 +64,8 @@ public class Manager : MonoBehaviour
         medalAlreadyUnlocked = new bool[3];
         music.volume = SettingsMenu.musicVolume;
         pollenKillCount = 0;
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player");
+        if (playerGO == null)
+            playerGO = GameObject.FindGameObjectWithTag("Player");
         Time.timeScale = 1;
         Player.playerFiredGun += PlayerFiredGun;
         Player.playerBoosted += PlayerBoosted;
@@ -111,10 +111,10 @@ public class Manager : MonoBehaviour
     }
     private void InitializeUI(int boost, int health)
     {
-        if (player != null)
+        if (playerGO != null)
         {
-            playerMaxHealth = player.GetComponent<Player>().GetMaxHealth();
-            playerMaxBoost = player.GetComponent<Player>().GetBoostMax();
+            playerMaxHealth = playerGO.GetComponent<Player>().GetMaxHealth();
+            playerMaxBoost = playerGO.GetComponent<Player>().GetBoostMax();
         }
         ChangeBoostDisplay(boost);
         ChangeHealthDisplay(health);
@@ -126,10 +126,10 @@ public class Manager : MonoBehaviour
     void Update()
     {
         //Doesn't use an event since speed is changed almost constantly
-        float playerSpeed = player.GetComponent<Player>().GetActiveForwardSpeed();
+        float playerSpeed = playerGO.GetComponent<Rigidbody>().velocity.magnitude;
         speedText.text = (playerSpeed).ToString("0");
         circleSpeed.SpeedChange(playerSpeed);
-        
+        cruiseControlText.text = playerGO.GetComponent<Player>().cruiseControl.ToString();
         if (!dead) {
             runtime += Time.deltaTime;
             timeText.text = runtime.ToString("0.00");
@@ -334,7 +334,7 @@ public class Manager : MonoBehaviour
 
     public void ReinitPlayerScreenVariable()
     {
-        player.GetComponent<Player>().ReinitializeScreenCenter();
+        playerGO.GetComponent<Player>().ReinitializeScreenCenter();
     }
 
 }
