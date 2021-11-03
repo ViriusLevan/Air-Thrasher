@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Pollen_Spine : BalloonEnemy
 {
-    //TODO recenter
-
     [Header("Laser Firing")]
     [SerializeField] private GameObject[] laserColliders;
     [SerializeField] private Transform[] laserFirePoints;
@@ -228,7 +226,6 @@ public class Pollen_Spine : BalloonEnemy
         }
     }
 
-    //TODO delete this after recentering
     private new void AdjustFloat()
     {
         //Float height target

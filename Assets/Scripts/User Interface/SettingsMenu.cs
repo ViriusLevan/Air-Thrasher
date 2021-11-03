@@ -93,15 +93,6 @@ public class SettingsMenu : MonoBehaviour
         sfxVolumeChange?.Invoke(sfxVolume);
         musicVolumeChange?.Invoke(musicVolume);
     }
-
-    //public void ChangeMasterVolume() {
-    //    float sliderValue = masterVSlider.value;
-    //    //mainAM.SetFloat("masterVolume", 
-    //    //    Mathf.Log10(sliderValue) * 20);
-    //    masterVolume = sliderValue;
-    //    PlayerPrefs.SetFloat("masterVolume", sliderValue);
-    //    PlayerPrefs.Save();
-    //}
     public void ChangeBGMVolume()
     {
         float sliderValue = musicVSlider.value;

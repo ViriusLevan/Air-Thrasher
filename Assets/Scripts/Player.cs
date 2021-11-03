@@ -318,25 +318,31 @@ public class Player : MonoBehaviour
     }
 
     //TODO fix this
+    //Sort of done lol
     public void ToggleDisableMouse(bool newState) {
-        //fullyDisableMouse = newState;
-        //if (newState)
-        //{
-        //    // Get binding mask for "PC_Scheme_Gamepad_Xbox".
-        //    string bindingGroup = planeInput.controlSchemes.
-        //        First(x => x.name == "Keyboard").bindingGroup;
-        //    string bindingGroup2 = planeInput.controlSchemes.
-        //        First(x => x.name == "Gamepad").bindingGroup;
-        //    String[] bindingGs = { bindingGroup, bindingGroup2 };
-        //    // Set as binding mask on actions. What this does is cause any binding that doesn't
-        //    // match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
-        //    // group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
-        //    // look up the name like above), only bindings in that control scheme will be used.
-        //    planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
-        //}
-        //else {
-        //    planeInput.bindingMask = null;
-        //}
+        fullyDisableMouse = newState;
+        if (newState)
+        {
+            InputSystem.DisableDevice(Mouse.current);
+            Cursor.visible = false;
+            //// Get binding mask for "PC_Scheme_Gamepad_Xbox".
+            //string bindingGroup = planeInput.controlSchemes.
+            //    First(x => x.name == "Keyboard").bindingGroup;
+            //string bindingGroup2 = planeInput.controlSchemes.
+            //    First(x => x.name == "Gamepad").bindingGroup;
+            //String[] bindingGs = { bindingGroup, bindingGroup2 };
+            //// Set as binding mask on actions. What this does is cause any binding that doesn't
+            //// match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
+            //// group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
+            //// look up the name like above), only bindings in that control scheme will be used.
+            //planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
+        }
+        else
+        {
+            InputSystem.EnableDevice(Mouse.current);
+            Cursor.visible = true;
+            //planeInput.bindingMask = null;
+        }
     }
 
     private void FireGun() {

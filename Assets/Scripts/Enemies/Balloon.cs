@@ -79,14 +79,8 @@ public class Balloon : MonoBehaviour, ICrashable
 
     public void CrashedByPlayerBullet()
     {
-        balloonPopped.Invoke(1,35, PopCause.ShotByPlayer);
+        balloonPopped.Invoke(2,35, PopCause.ShotByPlayer);
         Crash();
     }
 
-    //Missiles no longer pop balloons
-    //public void CrashedByFratricide() {
-    //    balloonPopped?.Invoke(1,40, PopCause.Fratricide);
-    //    Crash();
-    //}
-    
 }

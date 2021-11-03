@@ -67,8 +67,7 @@ public class Manager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {   //TODO remove these
-        //Cursor.visible = false;
+    {
         //Time.timeScale = 0;
 
         medalAlreadyUnlocked = new bool[3];
@@ -241,10 +240,10 @@ public class Manager : MonoBehaviour
     {
         switch (cause) {
             case Balloon.PopCause.RammedByPlayer:
-                eventText?.DisplayAnEvent("Direct Pop", 2);
+                eventText?.DisplayAnEvent("Direct Hit", 2);
                 break;
             case Balloon.PopCause.ShotByPlayer:
-                eventText?.DisplayAnEvent("Shot-Up", 2);
+                eventText?.DisplayAnEvent("Gun Hit", 2);
                 break;
             //case Balloon.PopCause.Fratricide:
             //    eventText?.DisplayAnEvent("Missile Pop", 3);
