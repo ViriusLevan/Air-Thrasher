@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
-using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -20,8 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float lookRotateSpeed;
     [SerializeField] private float stationaryRotateSpeed;
     private float defaultLookRotateSpeed;
-    private float arrowHorizontal, arrowVertical;
-    private bool overrideMouse, fullyDisableMouse=false;
+    private bool overrideMouse, fullyDisableMouse = false;
 
     private float verticalInput, rollInput;
     private Vector2 lookInput, screenCenter, mouseDistance;
@@ -39,13 +37,14 @@ public class Player : MonoBehaviour
     [SerializeField] private AudioClip[] engineSounds;
     [SerializeField] private float beStartSpeedBoost;
     [SerializeField] private float beStartSpeedNormal;
+    [SerializeField] private Animator jetPivot;
 
     [Header("Fire Bullet")]
     [SerializeField] private GameObject bullet;
     [SerializeField] private Transform bulletSpawnPoint;
     [SerializeField] private AudioClip[] gunFireClips;
     [SerializeField] private AudioSource gunAudioSource;
-    private float gunCooldown=0.2f, gunCDTimer;
+    private float gunCooldown = 0.2f, gunCDTimer;
     private bool fireInput = false;
 
     [Header("Player Death")]
@@ -55,49 +54,54 @@ public class Player : MonoBehaviour
 
     private Vector3 dodgeVector = Vector3.zero;
     private float dodgeCooldown = 0.6f, dodgeCDTimer, dodgeInput
-        , dodgeDuration = 0.3f, dodgeDurationTimer, cruiseControlInput, dodgeSpeed=500;
-    public short cruiseControl=0;
+        , dodgeDuration = 0.3f, dodgeDurationTimer, cruiseControlInput, dodgeSpeed = 500;
+    public short cruiseControl = 0;
 
     //private float stationaryModeTimer;
 
     public delegate void OnPlayerInitialized(int boostValue, int healthValuem);
     public static event OnPlayerInitialized initializeUI;
 
-    public enum FuelUsedCause 
-    { 
-        FiredGun, Boosted
+    public enum FuelChangeCause
+    {
+        FiredGun, Boosted, BalloonPop
     }
-    public delegate void OnFuelChanged(int newBoostValue, FuelUsedCause cause);
-    public static event OnFuelChanged onFuelUsed;
+    public delegate void OnFuelChanged(int newBoostValue, FuelChangeCause cause);
+    public static event OnFuelChanged onFuelUsed, onFuelFilled;
 
-    public enum HealthChangedCause 
-    { 
+    public enum HealthChangedCause
+    {
         EnemyMissile, EnemyMine, EnemyLaser, EnemyRam
     }
     public delegate void OnHealthChanged(int newHealthValue, HealthChangedCause cause);
     public static event OnHealthChanged onHealthChanged;
 
-    public enum ScoreIncrementCause 
-    { 
+    public enum ScoreIncrementCause
+    {
         FratricideMissile, FratricideMine, FratricideLaser, FratricideRam
     }
     public delegate void OnScoreIncrement(int scoreIncrement, int updatedFuel, ScoreIncrementCause cause);
     public static event OnScoreIncrement fratricide;
+
+    public delegate void OnEngineStateChanged(Manager.EngineState newState);
+    public static event OnEngineStateChanged engineStateChanged;
+
 
     public delegate void OnPlayerDeath();
     public static event OnPlayerDeath playerHasDied;
 
     private PlayerInput playerInput;
 
+
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         playerInput = GetComponent <PlayerInput>();
         initializeUI?.Invoke(boostFuel, health);
         screenCenter.x = Screen.width*.5f;
         screenCenter.y = Screen.height*.5f;
 
-        rb = GetComponent<Rigidbody>();
         boosterEffect = transform.GetChild(0).GetComponent<ParticleSystem>();
         //stationaryModeTimer = 0f;
         defaultLookRotateSpeed = lookRotateSpeed;
@@ -108,7 +112,7 @@ public class Player : MonoBehaviour
         EnemyLaser.fratricide += FratricideExplosion;
 
         boostTimer = 0f;
-        engineASource.volume = SettingsMenu.sfxVolume;
+        engineASource.volume = 0;
     }
 
     public void ReinitializeScreenCenter() {
@@ -152,7 +156,17 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.timeScale > 0 && !dead)
+        if (Time.timeScale == 0) 
+        {
+            engineASource.volume = 0;
+            return; 
+        }
+        else
+        {
+            engineASource.volume = SettingsMenu.sfxVolume;
+        }
+
+        if (!dead)
         {
             lookInput = playerInput.actions["Pitch & Yaw"].ReadValue<Vector2>();
             if (fullyDisableMouse)
@@ -179,19 +193,19 @@ public class Player : MonoBehaviour
             rollInput = playerInput.actions["Roll"].ReadValue<float>()*-1;
             verticalInput = playerInput.actions["Acceleration"].ReadValue<float>();
 
-            if ((verticalInput>0 || cruiseControl>0) && boostFuel > 0)
+            if ((verticalInput>0 || cruiseControl>0) && boostFuel > 1)
             {//Boost
                 if (boostTimer == 0
                     && activeForwardSpeed == forwardSpeed)
                 {
                     boostFuel -= 2;
-                    onFuelUsed?.Invoke(boostFuel, FuelUsedCause.Boosted);
+                    onFuelUsed?.Invoke(boostFuel, FuelChangeCause.Boosted);
                 }
                 else if (boostTimer >= 1f)
                 {
                     boostTimer -= 1f;
                     boostFuel -= 2;
-                    onFuelUsed?.Invoke(boostFuel, FuelUsedCause.Boosted);
+                    onFuelUsed?.Invoke(boostFuel, FuelChangeCause.Boosted);
                 }
                 boostTimer += Time.deltaTime;
                 activeForwardSpeed = Mathf.Lerp(
@@ -202,6 +216,8 @@ public class Player : MonoBehaviour
                 PlayEngineSoundLoop(1);
                 AdjustBoosterEffect(beStartSpeedBoost);
                 lookRotateSpeed = defaultLookRotateSpeed;
+                engineStateChanged?.Invoke(Manager.EngineState.Boost);
+                jetPivot.SetBool("down", false);
             }
             else if (verticalInput == -1 || cruiseControl<0)
             {//Stop
@@ -211,7 +227,8 @@ public class Player : MonoBehaviour
                         );
                 AdjustBoosterEffect(beStartSpeedNormal);
                 lookRotateSpeed = stationaryRotateSpeed;
-
+                engineStateChanged?.Invoke(Manager.EngineState.Stop);
+                jetPivot.SetBool("down", true);
             }
             else
             {//Normal
@@ -224,6 +241,8 @@ public class Player : MonoBehaviour
                 PlayEngineSoundLoop(0);
                 AdjustBoosterEffect(beStartSpeedNormal);
                 lookRotateSpeed = defaultLookRotateSpeed;
+                engineStateChanged?.Invoke(Manager.EngineState.Normal);
+                jetPivot.SetBool("down", false);
             }
 
             //Stop cruise control if it detects input in the opposite direction
@@ -326,7 +345,7 @@ public class Player : MonoBehaviour
         boostFuel -= 1;
         PlayRandomGunFiringSound();
         gunCDTimer = gunCooldown;
-        onFuelUsed?.Invoke(boostFuel, FuelUsedCause.FiredGun);
+        onFuelUsed?.Invoke(boostFuel, FuelChangeCause.FiredGun);
     }
 
     private void PlayRandomGunFiringSound() {
@@ -364,11 +383,11 @@ public class Player : MonoBehaviour
         }else if (boostFuel < 0) { 
             boostFuel = 0; 
         }
+        onFuelFilled?.Invoke(boostFuel, FuelChangeCause.BalloonPop);
     }
 
 
     public void HitByEnemy(HealthChangedCause cause) {
-
         switch (cause) {
             case HealthChangedCause.EnemyMine:
                 onHealthChanged?.Invoke(health - 1, HealthChangedCause.EnemyMine);
@@ -391,7 +410,6 @@ public class Player : MonoBehaviour
                     activeForwardSpeed -= 100;
                 break;
         }
-    
     }
 
     private void ReduceHealth(int amount) {

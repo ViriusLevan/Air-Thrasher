@@ -357,29 +357,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "37443238-c68e-42bf-886a-3b29cadae57b",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dodge",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "66154c44-8417-47ac-a5f7-f2229959efc3",
-                    "path": "<Keyboard>/g",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dodge",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "YH",
+                    "name": "Keyboard",
                     "id": "d35ebf48-a369-46a9-a9f8-272dc8a4bc51",
                     "path": "1DAxis",
                     "interactions": "",
@@ -404,6 +382,39 @@
                     "name": "negative",
                     "id": "72ce1ba8-1c3f-4fb6-9785-4d68a112efa4",
                     "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CruiseControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Gamepad",
+                    "id": "6fbf7009-955b-43ac-adb8-7f14d22e6f8e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CruiseControl",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "positive",
+                    "id": "ecc96e98-be35-4cd3-994c-a1e7ff137f37",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CruiseControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "negative",
+                    "id": "d2bc575a-e382-4b6f-807a-e74ec88cd315",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

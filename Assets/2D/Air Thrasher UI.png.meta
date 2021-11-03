@@ -32,6 +32,30 @@ TextureImporter:
   - first:
       213: -2137397215714020252
     second: Air Thrasher UI_9
+  - first:
+      213: 3055437107045719514
+    second: Air Thrasher UI_10
+  - first:
+      213: 73960575558418604
+    second: Air Thrasher UI_11
+  - first:
+      213: 9083661129666382089
+    second: Air Thrasher UI_12
+  - first:
+      213: 3204151196716163018
+    second: Air Thrasher UI_13
+  - first:
+      213: -105734344038980935
+    second: Air Thrasher UI_14
+  - first:
+      213: -4106714801802730577
+    second: Air Thrasher UI_15
+  - first:
+      213: -2592540663715372362
+    second: Air Thrasher UI_16
+  - first:
+      213: -6453347214034752146
+    second: Air Thrasher UI_17
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -172,10 +196,10 @@ TextureImporter:
       name: Air Thrasher UI_0
       rect:
         serializedVersion: 2
-        x: 65
-        y: 492
-        width: 301
-        height: 95
+        x: 13
+        y: 696
+        width: 156
+        height: 49
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,10 +217,10 @@ TextureImporter:
       name: Air Thrasher UI_1
       rect:
         serializedVersion: 2
-        x: 477
-        y: 380
-        width: 301
-        height: 301
+        x: 223
+        y: 589
+        width: 161
+        height: 161
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,10 +238,10 @@ TextureImporter:
       name: Air Thrasher UI_2
       rect:
         serializedVersion: 2
-        x: 967
-        y: 397
-        width: 356
-        height: 356
+        x: 432
+        y: 586
+        width: 186
+        height: 186
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,10 +259,10 @@ TextureImporter:
       name: Air Thrasher UI_3
       rect:
         serializedVersion: 2
-        x: 0
-        y: 4
-        width: 102
-        height: 252
+        x: 14
+        y: 561
+        width: 41
+        height: 105
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -256,10 +280,10 @@ TextureImporter:
       name: Air Thrasher UI_4
       rect:
         serializedVersion: 2
-        x: 173
-        y: 2
-        width: 102
-        height: 252
+        x: 94
+        y: 593
+        width: 72
+        height: 70
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -277,10 +301,10 @@ TextureImporter:
       name: Air Thrasher UI_5
       rect:
         serializedVersion: 2
-        x: 367
-        y: 178
-        width: 62
-        height: 62
+        x: 17
+        y: 475
+        width: 195
+        height: 55
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -298,10 +322,10 @@ TextureImporter:
       name: Air Thrasher UI_6
       rect:
         serializedVersion: 2
-        x: 490
-        y: 0
-        width: 102
-        height: 290
+        x: 247
+        y: 477
+        width: 31
+        height: 55
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -319,10 +343,10 @@ TextureImporter:
       name: Air Thrasher UI_7
       rect:
         serializedVersion: 2
-        x: 973
-        y: 5
-        width: 356
-        height: 356
+        x: 430
+        y: 382
+        width: 187
+        height: 187
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -340,10 +364,10 @@ TextureImporter:
       name: Air Thrasher UI_8
       rect:
         serializedVersion: 2
-        x: 376
-        y: 54
-        width: 32
-        height: 72
+        x: 11
+        y: 412
+        width: 264
+        height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -353,6 +377,195 @@ TextureImporter:
       bones: []
       spriteID: 3e3ad2f8a910a81f0800000000000000
       internalID: -1042018600444124189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_9
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 292
+        width: 243
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 464f4758e807652e0800000000000000
+      internalID: -2137397215714020252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_10
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 259
+        width: 257
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: addd1074cd7176a20800000000000000
+      internalID: 3055437107045719514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 197
+        width: 83
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca00b8960c2c60100800000000000000
+      internalID: 73960575558418604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_12
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 198
+        width: 69
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 909c9cd8ba5af0e70800000000000000
+      internalID: 9083661129666382089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_13
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 123
+        width: 195
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acfd8ee798e677c20800000000000000
+      internalID: 3204151196716163018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_14
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 131
+        width: 259
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b26ffe9c2b588ef0800000000000000
+      internalID: -105734344038980935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 73
+        width: 263
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa3a5b465a40207c0800000000000000
+      internalID: -4106714801802730577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_16
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 23
+        width: 296
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b26d719002750cd0800000000000000
+      internalID: -2592540663715372362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Air Thrasher UI_17
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 0
+        width: 243
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6da33f66ea1176a0800000000000000
+      internalID: -6453347214034752146
       vertices: []
       indices: 
       edges: []

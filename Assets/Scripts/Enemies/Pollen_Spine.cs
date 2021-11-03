@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
+public class Pollen_Spine : BalloonEnemy
 {
+    //TODO recenter
+
     [Header("Laser Firing")]
     [SerializeField] private GameObject[] laserColliders;
     [SerializeField] private Transform[] laserFirePoints;
@@ -21,32 +23,13 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
     [SerializeField] private float maxFiringDistance;
     private float timer=0f;
 
-    [Header("Float Height Settings")]
-    [SerializeField] private float upwardFloatForce;
-    [SerializeField] private float restingFloatForce;
-    [SerializeField] private float heightDifference;
-    private ConstantForce floatForce;
-
-    [Header("Self Explosion and Death")]
-    [SerializeField] private GameObject explosionPrefab;
-    [SerializeField] private float explosionRadius;
-    [SerializeField] private float explosionForce;
-    [SerializeField] private float explosionTimer;
-    [SerializeField] private float numberOfBalloons;
-    private bool dead=false;
-    
-    [Header("Follow")]
-    [SerializeField] private Transform target;
-    [SerializeField] private float rotationForce;
-    [SerializeField] private float force;
-    private Rigidbody rb;
     [SerializeField] private Transform[] pollenChildren;
+
     private float deltaTarget, stuckTimer, stuckInterval = 5f;
     private bool reverseCourse=false;
     private Collision stuckCollision;
 
-    public delegate void OnPollenSpineDeath();
-    public static event OnPollenSpineDeath spineDeath;
+    private bool detached = false;
 
     // Start is called before the first frame update
     void Start()
@@ -66,7 +49,10 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         }
         //rb.inertiaTensor = new Vector3(1,1,1);
         //rb.inertiaTensorRotation = Quaternion.identity;
-        //rb.centerOfMass -= new Vector3(-2.5f, -2.5f, 0);
+        //Debug.Log("before--"+rb.centerOfMass);
+        //rb.centerOfMass += new Vector3(-2.4f, 50, 0);
+        //rb.WakeUp();
+        //Debug.Log("after--"+rb.centerOfMass);
         deltaTarget = Vector3.Distance
                 (target.position, this.transform.position);
         stuckTimer = stuckInterval;
@@ -75,8 +61,15 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         if (dead)
         {
+            if (!detached)
+            {
+                InvokeDeathEvent(BalloonEnemyType.PollenSpine);
+                DetachChildren();
+                detached = true;
+            }
             explosionTimer -= Time.deltaTime;
             if (explosionTimer <= 0) {
                 Explode();
@@ -195,10 +188,14 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         {
             for (int i = 0; i < laserFirePoints.Length; i++)
             {
-                laserRenderers[i].enabled = false;
-                laserColliders[i].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                laserColliders[i].transform.localPosition = new Vector3(0, 0, 2.5f);
-                laserAudio[i].Pause();
+                if(laserRenderers[i]!=null)
+                    laserRenderers[i].enabled = false;
+                if (laserColliders[i] != null)
+                {
+                    laserColliders[i].transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                    laserColliders[i].transform.localPosition = new Vector3(0, 0, 2.5f);
+                }
+                laserAudio[i]?.Pause();
             }
 
             if (laserITimer <= 0)
@@ -231,9 +228,11 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         }
     }
 
-    private void AdjustFloat() {
+    //TODO delete this after recentering
+    private new void AdjustFloat()
+    {
         //Float height target
-        float maxHeight = target.transform.position.y + (heightDifference + (deltaTarget / 10f));
+        float maxHeight = target.transform.position.y + (5 + (deltaTarget / 10f));
         if (this.transform.position.y > maxHeight)
         {
             floatForce.force = new Vector3(0, restingFloatForce, 0);
@@ -261,7 +260,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         rb.AddTorque(uprightBalance * rotationForce * 3);
     }
 
-    private void Move() {
+    new private void Move() {
         if (!reverseCourse)
         {
             rb.AddForce(transform.forward * force);
@@ -274,7 +273,7 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
         }
     }
 
-    public void Explode()
+    new public void Explode()
     {
         //instantiate effect
         Instantiate(explosionPrefab, transform.position, transform.rotation);
@@ -291,25 +290,19 @@ public class Pollen_Spine : MonoBehaviour, IExplodable, IEnemy
                     explosionForce, transform.position, explosionRadius);
             }
         }
-        spineDeath?.Invoke();
         Destroy(this.gameObject);
     }
 
-    public void ReduceBalloonCount()
-    {
-        numberOfBalloons -= 1;
-        if (numberOfBalloons <= 0) {
-            floatForce.force = new Vector3(0, 0, 0);
-            dead = true;
-            foreach (Transform child in pollenChildren)
-            {
-                child.SetParent(null);
-                child.GetComponent<HingeJoint>().breakForce = 0.001f;
-                child.GetComponent<Rigidbody>().AddForce(
-                    new Vector3(Random.Range(0.001f,0.1f), Random.Range(0.001f, 0.1f), Random.Range(0.001f, 0.1f))
-                    );
-                child.GetComponent<Pollen_Child>().enabled = true;
-            }
+    private void DetachChildren() {
+        foreach (Transform child in pollenChildren)
+        {
+            EnemySpawner.enemyNumber += 1;
+            child.SetParent(null);
+            child.gameObject.GetComponent<HingeJoint>().breakForce = 0.001f;
+            child.gameObject.GetComponent<Rigidbody>().AddForce(
+                new Vector3(Random.Range(0.001f, 0.1f), Random.Range(0.001f, 0.1f), Random.Range(0.001f, 0.1f))
+                );
+            child.gameObject.GetComponent<Pollen_Child>().enabled = true;
         }
     }
 }

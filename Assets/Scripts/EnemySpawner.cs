@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-
+    public static int enemyNumber=5;
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private float spawnInterval;
     [SerializeField] private float spawnMultiplier;
@@ -22,9 +22,11 @@ public class EnemySpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         spawnTimer -= Time.deltaTime;
-        if (spawnTimer <= 0)
+        if (spawnTimer <= 0 && enemyNumber <60)
         {
+            enemyNumber += 1;
             int spawnChoice = Random.Range(0, enemyPrefabs.Length);
             spawnTimer = spawnInterval + (spawnMultiplier*spawnChoice);
             Vector3 originPoint = spawnPoint.position;

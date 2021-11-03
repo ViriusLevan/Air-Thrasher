@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BargeBullet : MonoBehaviour, IExplodable
+public class BargeBullet : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private float force;
@@ -41,6 +41,7 @@ public class BargeBullet : MonoBehaviour, IExplodable
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         secondsBeforeExplosion -= Time.deltaTime;
         if (secondsBeforeExplosion <= 0)
         {

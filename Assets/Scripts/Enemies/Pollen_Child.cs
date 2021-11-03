@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
+public class Pollen_Child : BalloonEnemy
 {
     [Header("Laser Firing")]
     [SerializeField] private GameObject laserCollider;
@@ -15,24 +15,6 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
     private float laserITimer = 0f, laserDTimer=0f;
     private bool isFiringLaser = false;
 
-    [Header("Float Height Settings")]
-    [SerializeField] private float upwardFloatForce;
-    [SerializeField] private float restingFloatForce;
-    private ConstantForce floatForce;
-
-    [Header("Self Explosion and Death")]
-    [SerializeField] private GameObject explosionPrefab;
-    [SerializeField] private float explosionRadius;
-    [SerializeField] private float explosionForce;
-    [SerializeField] private float explosionTimer;
-    [SerializeField] private float numberOfBalloons;
-    private bool dead = false;
-
-    [Header("Follow")]
-    [SerializeField] private Transform target;
-    [SerializeField] private float rotationForce;
-    [SerializeField] private float force;
-    private Rigidbody rb;
 
     private bool active = false;
     private float startDelay = 3f;
@@ -64,6 +46,7 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         if (active)
         {
             if (dead)
@@ -71,6 +54,7 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
                 explosionTimer -= Time.deltaTime;
                 if (explosionTimer <= 0)
                 {
+                    InvokeDeathEvent(BalloonEnemyType.PollenChild);
                     Explode();
                 }
             }
@@ -172,74 +156,6 @@ public class Pollen_Child : MonoBehaviour, IExplodable, IEnemy
                 laserITimer = laserInterval;
                 isFiringLaser = true;
             }
-        }
-    }
-
-    private void AdjustFloat()
-    {
-        //Float height target
-        if (this.transform.position.y > target.position.y+1)
-        {
-            floatForce.force = new Vector3(0, restingFloatForce, 0);
-        }
-        else
-        {
-            floatForce.force = new Vector3(0, upwardFloatForce, 0);
-        }
-    }
-
-    private void Turn()
-    {
-        Vector3 direction = target.position - rb.position; //getting direction
-        direction.Normalize(); //erasing magnitude
-        Vector3 rotateToPlayer = Vector3.Cross(transform.forward, direction);//calculating angle
-        rotateToPlayer = Vector3.Project(rotateToPlayer, transform.up);
-        rb.AddRelativeTorque(rotateToPlayer * rotationForce);
-        //Debug.Log(rotationAmount +"->"+rb.angularVelocity);
-
-        //Local up to World Up
-        Vector3 predictedUp = Quaternion.AngleAxis(
-             rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
-             rb.angularVelocity
-         ) * transform.up;
-        Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
-        rb.AddTorque(torqueVector * force * 5);
-    }
-
-    private void Move()
-    {
-        rb.AddForce(transform.forward * force);
-        //Debug.Log(transform.forward+"->"+rb.velocity);
-    }
-
-    public void Explode()
-    {
-        //instantiate effect
-        Instantiate(explosionPrefab, transform.position, transform.rotation);
-
-        //apply force to nearby rigidbodies with colliders
-        Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
-
-        foreach (Collider nearbyObject in colliders)
-        {
-            Rigidbody rb = nearbyObject.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.AddExplosionForce(
-                    explosionForce, transform.position, explosionRadius);
-            }
-        }
-        Destroy(this.gameObject);
-    }
-
-    public void ReduceBalloonCount()
-    {
-        numberOfBalloons -= 1;
-        if (numberOfBalloons <= 0)
-        {
-            balloonAnimator.SetBool("deflated", true);
-            floatForce.force = new Vector3(0, 0, 0);
-            dead = true;
         }
     }
 }

@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f9694b60a8d184790dc147e9c2715d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDeltaTarget: 50
+  maxDeltaTarget: 30
   explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
   explosionRadius: 12
   explosionForce: 20

@@ -11,15 +11,16 @@ public class Manager : MonoBehaviour
 {
 
     [SerializeField] private TMP_Text speedText, scoreText, boostText, 
-        healthText, finalScoreText, highScoreText, timeText, medalPoint, cruiseControlText;
+        healthText, finalScoreText, highScoreText, timeText, medalPoint;
     [SerializeField] private GameObject player;
     [SerializeField] private Image healthBar, boostBar;
+    [SerializeField] private Image[] engineStateLights;
     [SerializeField] private GameObject finalPanel;
     [SerializeField] private UI_EventText eventText;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private Button pauseButton, restartButton;
     [SerializeField] private NewgroundsMedals ngMedalsHandler;
-    [SerializeField] private Animator achievementAnimator;
+    [SerializeField] private Animator achievementAnimator, damageOverlayAnimator, energyUsageAnimator;
     [SerializeField] private Image achievementSprite;
     [SerializeField] private Sprite[] achievementSprites;
     [SerializeField] private AudioSource music;
@@ -32,6 +33,9 @@ public class Manager : MonoBehaviour
     private bool[] medalAlreadyUnlocked;
     public bool paused;
 
+    public enum EngineState { 
+        Stop, Normal, Boost
+    }
 
     public void InputPause() {
         if (pauseTimer <= 0)
@@ -50,6 +54,10 @@ public class Manager : MonoBehaviour
 
     private void Awake()
     {
+        if (!player)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
         Player.initializeUI += InitializeUI;
         if (PlayerPrefs.HasKey("highScore")) {
             highScore = PlayerPrefs.GetInt("highScore");
@@ -66,17 +74,16 @@ public class Manager : MonoBehaviour
         medalAlreadyUnlocked = new bool[3];
         music.volume = SettingsMenu.musicVolume;
         pollenKillCount = 0;
-        if (player == null) { 
-            player = GameObject.FindGameObjectWithTag("Player"); 
-        }
+        
         Time.timeScale = 1;
         Player.onFuelUsed += OnFuelUsed;
+        Player.onFuelFilled += OnFuelFilled;
         Player.onHealthChanged += PlayerHealthChanged;
         Balloon.balloonPopped += BalloonPopped;
         Player.fratricide += FratricideExplosion;
-
+        Player.engineStateChanged += SwitchStateLights;
         Player.playerHasDied += GameOver;
-        Pollen_Spine.spineDeath += IncrementSpineKillCount;
+        BalloonEnemy.enemyDeath += IncrementKillCount;
         SettingsMenu.musicVolumeChange += ChangeMusicVolume;
         //
         NewgroundsMedals.MedalCalledback += DisplayMedalUnlock;
@@ -85,18 +92,43 @@ public class Manager : MonoBehaviour
     private void OnDestroy()
     {
         Player.onFuelUsed -= OnFuelUsed;
+        Player.onFuelFilled -= OnFuelFilled;
         Player.onHealthChanged -= PlayerHealthChanged;
         Balloon.balloonPopped -= BalloonPopped;
         Player.fratricide -= FratricideExplosion;
+        Player.engineStateChanged -= SwitchStateLights;
         Player.playerHasDied -= GameOver;
         Player.initializeUI -= InitializeUI;
-        Pollen_Spine.spineDeath -= IncrementSpineKillCount;
+        BalloonEnemy.enemyDeath -= IncrementKillCount;
         SettingsMenu.musicVolumeChange -= ChangeMusicVolume;
         //
         NewgroundsMedals.MedalCalledback -= DisplayMedalUnlock;
     }
+
+    //TODO : maybe extend this?
+    private void IncrementKillCount(BalloonEnemy.BalloonEnemyType type) {
+        switch (type) {
+            case BalloonEnemy.BalloonEnemyType.PollenSpine:
+                pollenKillCount += 1;
+                if (pollenKillCount >= 10
+                    && !!medalAlreadyUnlocked[2])
+                {
+                    if (ngMedalsHandler != null)
+                    {
+                        ngMedalsHandler?.unlockMedal(65273);
+                        medalAlreadyUnlocked[2] = true;
+                    }
+                }
+                break;
+        }
+    }
+
     private void InitializeUI(int boost, int health)
     {
+        if (!player)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
         if (player != null)
         {
             currentPlayer = player.GetComponent<Player>();
@@ -112,11 +144,12 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(currentPlayer==null) currentPlayer = player.GetComponent<Player>(); 
+
         //Doesn't use an event since speed is changed almost constantly
         float playerSpeed = currentPlayer.GetRB().velocity.magnitude;
         speedText.text = (playerSpeed).ToString("0");
         circleSpeed.SpeedChange(playerSpeed);
-        cruiseControlText.text = currentPlayer.cruiseControl.ToString();
         if (!dead) {
             runtime += Time.deltaTime;
             timeText.text = runtime.ToString("0.00");
@@ -131,16 +164,33 @@ public class Manager : MonoBehaviour
         music.volume = newVal;
     }
 
-    private void OnFuelUsed(int updatedFuelValue, Player.FuelUsedCause cause) {
+    private bool animDisplaying;
+    private void OnFuelUsed(int updatedFuelValue, Player.FuelChangeCause cause) {
         switch (cause) {
-            case Player.FuelUsedCause.Boosted:
+            case Player.FuelChangeCause.Boosted:
                 eventText?.DisplayAnEvent("Boosted", 0);
                 ChangeBoostDisplay(updatedFuelValue);
                 break;
-            case Player.FuelUsedCause.FiredGun:
+            case Player.FuelChangeCause.FiredGun:
                 eventText?.DisplayAnEvent("Fired Gun", 0);
                 ChangeBoostDisplay(updatedFuelValue);
                 break;
+        }
+        if (energyUsageAnimator.GetCurrentAnimatorStateInfo(0).IsName("Not Displaying"))
+        {
+            energyUsageAnimator.ResetTrigger("filled");
+            energyUsageAnimator.ResetTrigger("used");
+            energyUsageAnimator.SetTrigger("used");
+        }
+    }
+
+    private void OnFuelFilled(int updatedFuelValue, Player.FuelChangeCause cause)
+    {
+        if (energyUsageAnimator.GetCurrentAnimatorStateInfo(0).IsName("Not Displaying"))
+        {
+            energyUsageAnimator.ResetTrigger("filled");
+            energyUsageAnimator.ResetTrigger("used");
+            energyUsageAnimator.SetTrigger("filled");
         }
     }
 
@@ -173,7 +223,17 @@ public class Manager : MonoBehaviour
         if (healthAmount < 0) healthAmount = 0;
         healthText.text = healthAmount.ToString();
         float healthFill = ((float)healthAmount) / ((float)playerMaxHealth);
+        //Debug.Log(healthAmount+"->"+healthFill);
         healthBar.fillAmount = healthFill;
+        damageOverlayAnimator.SetTrigger("damaged");
+        if (healthAmount < 4)
+        {
+            damageOverlayAnimator.SetBool("critical", true);
+        }
+        else
+        {
+            damageOverlayAnimator.SetBool("critical", false);
+        }
     }
 
     private void BalloonPopped(int addedFuel, int scoreIncrease
@@ -241,18 +301,6 @@ public class Manager : MonoBehaviour
         }
     }
 
-    private void IncrementSpineKillCount() {
-        pollenKillCount += 1;
-        if (pollenKillCount >= 10 
-            && !!medalAlreadyUnlocked[2]) {
-            if (ngMedalsHandler != null)
-            {
-                ngMedalsHandler?.unlockMedal(65273);
-                medalAlreadyUnlocked[2] = true;
-            }
-        }
-    }
-
     private void DisplayMedalUnlock(string index, int points) {
         switch (index) {
             case "Thrasher"://Thrasher
@@ -274,6 +322,28 @@ public class Manager : MonoBehaviour
         achievementAnimator.SetBool("disappear",false);
         yield return new WaitForSeconds(5f);
         achievementAnimator.SetBool("disappear", true);
+    }
+
+    private Color32 activeLight = new Color32(132,217,224,180)
+        , dimLight = new Color32(128, 128, 128, 180);
+    private void SwitchStateLights(EngineState state) {
+        switch (state) {
+            case EngineState.Stop:
+                engineStateLights[0].color = activeLight;
+                engineStateLights[1].color = dimLight;
+                engineStateLights[2].color = dimLight;
+                break;
+            case EngineState.Normal:
+                engineStateLights[0].color = dimLight;
+                engineStateLights[1].color = activeLight;
+                engineStateLights[2].color = dimLight;
+                break;
+            case EngineState.Boost:
+                engineStateLights[0].color = dimLight;
+                engineStateLights[1].color = dimLight;
+                engineStateLights[2].color = activeLight;
+                break;
+        }
     }
 
     public void GameOver() {
@@ -303,7 +373,9 @@ public class Manager : MonoBehaviour
         }
     }
 
-    public void RestartGame() {
+    public void RestartGame()
+    {
+        AudioListener.pause = false;
         SceneManager.LoadScene(0);
     }
 

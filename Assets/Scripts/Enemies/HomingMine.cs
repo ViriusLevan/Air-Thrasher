@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HomingMine : MonoBehaviour, IExplodable, IEnemy
+public class HomingMine : MonoBehaviour
 {
     [Header("Float Height Settings")]
     private ConstantForce floatForce;
@@ -47,6 +47,7 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         //Time before afterdeath explosion 
         if (dead)
         {
@@ -112,22 +113,20 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
         rb.AddTorque(torqueVector * force * force);
     }
 
-    
-
-
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent(out IExplodable explosive)
-            && !collision.gameObject.TryGetComponent(out Pollen_Spine pSpine)) {
-            explosive.Explode();
-            fratricide?.Invoke(Player.ScoreIncrementCause.FratricideMine);
-        }
-        else if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
             collision.gameObject.GetComponent<Player>()
                 .HitByEnemy(Player.HealthChangedCause.EnemyMine);
             Explode();
         }
+        //else if (collision.gameObject.TryGetComponent(out BalloonEnemy explosive)
+        //    && !collision.gameObject.TryGetComponent(out Pollen_Spine pSpine)
+        //    && !collision.gameObject.TryGetComponent(out Powell powell)) {
+        //    explosive.Explode();
+        //    fratricide?.Invoke(Player.ScoreIncrementCause.FratricideMine);
+        //}
     }
 
     private void Activate() {
@@ -141,22 +140,15 @@ public class HomingMine : MonoBehaviour, IExplodable, IEnemy
     private void AdjustFloat()
     {
         //Float height target
-        if (this.transform.position.y >= 300)
+        if (this.transform.position.y-target.transform.position.y>25)
         {
-            floatForce.force = new Vector3(0, 9, 0);
+            floatForce.force = new Vector3(0, 7, 0);
         }
         else
         {
-            floatForce.force = new Vector3(0, 11, 0);
+            floatForce.force = new Vector3(0, 13, 0);
         }
-
-        //Local up to World Up
-        Vector3 predictedUp = Quaternion.AngleAxis(
-             rb.angularVelocity.magnitude * Mathf.Rad2Deg * rotationForce / force,
-             rb.angularVelocity
-         ) * transform.up;
-        Vector3 torqueVector = Vector3.Cross(predictedUp, Vector3.up);
-        rb.AddTorque(torqueVector * force * force);
+        //Debug.Log(floatForce.force);
     }
 
     public void Explode()

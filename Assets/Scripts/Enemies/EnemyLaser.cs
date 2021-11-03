@@ -12,12 +12,8 @@ public class EnemyLaser : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject != parent
-            && other.gameObject.TryGetComponent(out IExplodable explosive)
-            && !other.gameObject.TryGetComponent(out Pollen_Spine pSpine)) {
-            explosive.Explode();//explodes every explodable but a fellow pollenSpine
-            fratricide?.Invoke(Player.ScoreIncrementCause.FratricideLaser);
-        }else if (other.gameObject.tag == "Player") {
+        if (other.gameObject.tag == "Player")
+        {
             countUp += Time.deltaTime;
             if (countUp >= 0.35f)
             {
@@ -26,5 +22,17 @@ public class EnemyLaser : MonoBehaviour
                     GetComponent<Player>().HitByEnemy(Player.HealthChangedCause.EnemyLaser);
             }
         }
+        else if (other.gameObject.TryGetComponent(out HomingProjectile homing))
+        {
+            homing?.Explode();
+        }
+        //else if (other.gameObject != parent
+        //    && other.gameObject.TryGetComponent(out BalloonEnemy explosive)
+        //    && !other.gameObject.TryGetComponent(out Pollen_Spine pSpine))
+        //{
+
+        //    explosive?.Explode();//explodes every BalloonEnemy but a fellow pollenSpine
+        //    fratricide?.Invoke(Player.ScoreIncrementCause.FratricideLaser);
+        //}
     }
 }

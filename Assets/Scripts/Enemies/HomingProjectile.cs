@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HomingProjectile : MonoBehaviour, IExplodable
+public class HomingProjectile : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private float force;
@@ -42,6 +42,7 @@ public class HomingProjectile : MonoBehaviour, IExplodable
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
         secondsBeforeExplosion -= Time.deltaTime;
         if (secondsBeforeExplosion <= 0)
         {

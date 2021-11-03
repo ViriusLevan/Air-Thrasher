@@ -7,7 +7,7 @@ public class Balloon : MonoBehaviour, ICrashable
     [SerializeField] private Animator deflationAnimator;
     //[SerializeField] private float deflationSpeed;
     [SerializeField] private GameObject mObjectGO;
-    private IEnemy masterObject;
+    private BalloonEnemy masterObject;
     private bool deflated=false;
     private AudioSource aSource;
     private MeshRenderer meshRenderer;
@@ -27,10 +27,10 @@ public class Balloon : MonoBehaviour, ICrashable
         aSource = this.GetComponent<AudioSource>();
         if (mObjectGO == null)
         {
-            IEnemy checkMO = this.GetComponentInParent<IEnemy>();
+            BalloonEnemy checkMO = this.GetComponentInParent<BalloonEnemy>();
             if (checkMO == null)
             {
-                masterObject = this.GetComponent<IEnemy>();
+                masterObject = this.GetComponent<BalloonEnemy>();
             }
             else
             {
@@ -38,7 +38,7 @@ public class Balloon : MonoBehaviour, ICrashable
             }
         }
         else {
-            masterObject = mObjectGO.GetComponent<IEnemy>();
+            masterObject = mObjectGO.GetComponent<BalloonEnemy>();
         }
         meshRenderer = this.GetComponent<MeshRenderer>();
         sCollider = this.GetComponent<SphereCollider>();
