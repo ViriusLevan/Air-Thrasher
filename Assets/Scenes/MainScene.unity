@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 7892091}
   - component: {fileID: 7892090}
   - component: {fileID: 7892089}
+  - component: {fileID: 7892092}
   m_Layer: 5
   m_Name: ControlRebind
   m_TagString: Untagged
@@ -191,7 +192,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1246567219}
-  - {fileID: 1710920397}
+  - {fileID: 557283397}
+  - {fileID: 1523083911}
+  - {fileID: 138320691}
   - {fileID: 588795383}
   - {fileID: 1146894528}
   - {fileID: 544471472}
@@ -201,11 +204,31 @@ RectTransform:
   m_Father: {fileID: 444047354}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000038146973, y: -0.097863}
-  m_SizeDelta: {x: 1280, y: 720}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7892092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7892088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c683de13ea9ea0d4cba79230f4848cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tabs:
+  - {fileID: 557283400}
+  - {fileID: 1523083914}
+  - {fileID: 138320694}
+  deviceDisplays:
+  - {fileID: 588795382}
+  - {fileID: 1146894527}
+  - {fileID: 544471471}
 --- !u!1001 &35493936
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2194,12 +2217,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1710920397}
-  m_RootOrder: 2
+  m_Father: {fileID: 7892091}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 262.5, y: -62.5}
+  m_AnchoredPosition: {x: -327.49994, y: -62.5}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &138320692
@@ -2284,7 +2307,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1710920398}
+      - m_Target: {fileID: 7892092}
         m_TargetAssemblyTypeName: RebindDeviceTabs, Assembly-CSharp
         m_MethodName: SwitchTab
         m_Mode: 3
@@ -4409,7 +4432,7 @@ RectTransform:
   - {fileID: 1627002325}
   - {fileID: 319368523}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -4475,7 +4498,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1001 &318330975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4631,7 +4654,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Disable mouse input
+  m_text: Disable player movement by mouse
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -4658,7 +4681,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 46.1
+  m_fontSize: 42.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5296,7 +5319,7 @@ RectTransform:
   - {fileID: 326549349}
   - {fileID: 149681595}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -5347,9 +5370,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 554835552}
-        m_TargetAssemblyTypeName: MenuControlRebind, Assembly-CSharp
-        m_MethodName: CloseControlRebindPanel
+      - m_Target: {fileID: 444047355}
+        m_TargetAssemblyTypeName: MenuConfirmation, Assembly-CSharp
+        m_MethodName: CloseMenuPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5631,6 +5654,8 @@ GameObject:
   - component: {fileID: 444047353}
   - component: {fileID: 444047352}
   - component: {fileID: 444047351}
+  - component: {fileID: 444047356}
+  - component: {fileID: 444047355}
   m_Layer: 5
   m_Name: Canvas-Menus
   m_TagString: Untagged
@@ -5724,6 +5749,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &444047355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444047350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2bd29706c1526346a5ffe31b1b6b363, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuPanel: {fileID: 198921443}
+--- !u!114 &444047356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444047350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8aa1b23b37cbc4469577d05fce6ed44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlRebindPanel: {fileID: 7892088}
 --- !u!1 &447413367
 GameObject:
   m_ObjectHideFlags: 0
@@ -6500,7 +6551,7 @@ RectTransform:
   - {fileID: 370880358}
   - {fileID: 1297130179}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -7050,8 +7101,6 @@ GameObject:
   - component: {fileID: 554835549}
   - component: {fileID: 554835551}
   - component: {fileID: 554835550}
-  - component: {fileID: 554835552}
-  - component: {fileID: 554835553}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -7071,20 +7120,20 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1135193636}
-  - {fileID: 820603597}
-  - {fileID: 1794293801}
-  - {fileID: 1737274829}
   - {fileID: 313831607}
-  - {fileID: 1268421371}
-  - {fileID: 554121368}
+  - {fileID: 1737274829}
+  - {fileID: 1794293801}
+  - {fileID: 820603597}
   - {fileID: 1602646292}
+  - {fileID: 554121368}
+  - {fileID: 1268421371}
   m_Father: {fileID: 444047354}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.00006324712, y: -0.00048828125}
-  m_SizeDelta: {x: 1280, y: 0.0010986328}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &554835550
 MonoBehaviour:
@@ -7124,32 +7173,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 554835548}
   m_CullTransparentMesh: 1
---- !u!114 &554835552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 554835548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8aa1b23b37cbc4469577d05fce6ed44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controlRebindPanel: {fileID: 7892088}
---- !u!114 &554835553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 554835548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2bd29706c1526346a5ffe31b1b6b363, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  menuPanel: {fileID: 198921443}
 --- !u!1 &557283396
 GameObject:
   m_ObjectHideFlags: 0
@@ -7180,12 +7203,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1710920397}
-  m_RootOrder: 0
+  m_Father: {fileID: 7892091}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 12.5, y: -62.5}
+  m_AnchoredPosition: {x: -577.49994, y: -62.5}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &557283398
@@ -7270,7 +7293,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1710920398}
+      - m_Target: {fileID: 7892092}
         m_TargetAssemblyTypeName: RebindDeviceTabs, Assembly-CSharp
         m_MethodName: SwitchTab
         m_Mode: 3
@@ -7554,7 +7577,7 @@ RectTransform:
   - {fileID: 667100847}
   - {fileID: 1001648851}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -9613,11 +9636,11 @@ RectTransform:
   - {fileID: 1626829102}
   - {fileID: 1714440664}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -6.9999695}
+  m_AnchoredPosition: {x: 0, y: -7}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &793610199
@@ -9892,7 +9915,7 @@ RectTransform:
   - {fileID: 1429221597}
   - {fileID: 833315231}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -12291,7 +12314,7 @@ RectTransform:
   - {fileID: 910552791}
   - {fileID: 2051584411}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -12431,7 +12454,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0.0010681152}
+  m_AnchoredPosition: {x: -0.000061035156, y: 0.0010986328}
   m_SizeDelta: {x: 0, y: -0.19451904}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1246567220
@@ -12504,7 +12527,7 @@ RectTransform:
   m_Children:
   - {fileID: 723759502}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -12555,7 +12578,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 554835553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MenuConfirmation, Assembly-CSharp
         m_MethodName: OpenMenuPanel
         m_Mode: 1
@@ -14254,12 +14277,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1710920397}
-  m_RootOrder: 1
+  m_Father: {fileID: 7892091}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 137.5, y: -62.5}
+  m_AnchoredPosition: {x: -452.49994, y: -62.5}
   m_SizeDelta: {x: 125, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1523083912
@@ -14344,7 +14367,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1710920398}
+      - m_Target: {fileID: 7892092}
         m_TargetAssemblyTypeName: RebindDeviceTabs, Assembly-CSharp
         m_MethodName: SwitchTab
         m_Mode: 3
@@ -14389,7 +14412,7 @@ RectTransform:
   m_Children:
   - {fileID: 1025907338}
   m_Father: {fileID: 7892091}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -15040,7 +15063,7 @@ GameObject:
   - component: {fileID: 1602646294}
   - component: {fileID: 1602646293}
   m_Layer: 5
-  m_Name: RebindMenu
+  m_Name: RebindMenuButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15059,7 +15082,7 @@ RectTransform:
   m_Children:
   - {fileID: 1787366490}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -15110,7 +15133,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 554835552}
+      - m_Target: {fileID: 444047356}
         m_TargetAssemblyTypeName: MenuControlRebind, Assembly-CSharp
         m_MethodName: OpenControlRebindPanel
         m_Mode: 1
@@ -16344,65 +16367,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1704322242}
   m_CullTransparentMesh: 1
---- !u!1 &1710920396
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1710920397}
-  - component: {fileID: 1710920398}
-  m_Layer: 5
-  m_Name: DeviceTabs
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1710920397
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1710920396}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 557283397}
-  - {fileID: 1523083911}
-  - {fileID: 138320691}
-  m_Father: {fileID: 7892091}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -50}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1710920398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1710920396}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c683de13ea9ea0d4cba79230f4848cf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tabs:
-  - {fileID: 557283400}
-  - {fileID: 1523083914}
-  - {fileID: 138320694}
-  deviceDisplays:
-  - {fileID: 588795382}
-  - {fileID: 1146894527}
-  - {fileID: 544471471}
 --- !u!1 &1714440663
 GameObject:
   m_ObjectHideFlags: 0
@@ -16834,7 +16798,7 @@ RectTransform:
   - {fileID: 152322362}
   - {fileID: 277502225}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -17091,7 +17055,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 554835553}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MenuConfirmation, Assembly-CSharp
         m_MethodName: CloseMenuPanel
         m_Mode: 1
@@ -17555,7 +17519,7 @@ RectTransform:
   - {fileID: 1334004144}
   - {fileID: 176683951}
   m_Father: {fileID: 554835549}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 public class Manager : MonoBehaviour
 {
 
-    [SerializeField] private TMP_Text speedText, scoreText, boostText, 
+    [SerializeField] private TMP_Text speedText, scoreText, boostText,
         healthText, finalScoreText, highScoreText, timeText, medalPoint;
     [SerializeField] private GameObject player;
     [SerializeField] private Image healthBar, boostBar;
@@ -27,17 +27,23 @@ public class Manager : MonoBehaviour
     [SerializeField] private CircleSpeedIndicator circleSpeed;
     private Player currentPlayer;
     private int score, playerMaxHealth, highScore, pollenKillCount;
-    private float playerMaxBoost, pauseTimer=0f, 
-        pauseCooldown=0.5f, runtime=0f;
-    private bool dead=false; //bruh
+    private float playerMaxBoost, pauseTimer = 0f,
+        pauseCooldown = 0.5f, runtime = 0f;
+    private bool dead = false; //bruh
     private bool[] medalAlreadyUnlocked;
     public bool paused;
 
-    public enum EngineState { 
+    public enum EngineState {
         Stop, Normal, Boost
     }
-
+    public enum MenuState {
+        Playing, Settings, Rebind, GameOver
+    }
+    //TODO replace statics for goodness sakes
+    public static MenuState menuState;
     public void InputPause() {
+
+        if (menuState != MenuState.Playing && menuState != MenuState.Settings) { return; }
         if (pauseTimer <= 0)
         {
             if (!dead)
@@ -54,6 +60,7 @@ public class Manager : MonoBehaviour
 
     private void Awake()
     {
+        menuState = MenuState.Playing;
         if (!player)
         {
             player = GameObject.FindGameObjectWithTag("Player");
@@ -346,6 +353,7 @@ public class Manager : MonoBehaviour
     }
 
     public void GameOver() {
+        menuState = MenuState.GameOver;
         Time.timeScale = 0;
         finalPanel.SetActive(true);
         finalScoreText.text = score.ToString();
@@ -357,15 +365,18 @@ public class Manager : MonoBehaviour
     {
         if (Time.timeScale == 0)
         {
+            menuState = MenuState.Playing;
             settingsPanel.SetActive(false);
             Time.timeScale = 1;
             paused = false;
             AudioListener.pause = false;
             EventSystem.current.SetSelectedGameObject(null);
         }
-        else{
-            Time.timeScale = 0;
+        else
+        {
+            menuState = MenuState.Settings;
             settingsPanel.SetActive(true);
+            Time.timeScale = 0;
             paused = true;
             pauseButton.Select();
             AudioListener.pause=true;
@@ -374,7 +385,9 @@ public class Manager : MonoBehaviour
 
     public void RestartGame()
     {
+        EnemySpawner.enemyNumber = 5;
         AudioListener.pause = false;
+        menuState = MenuState.Playing;
         SceneManager.LoadScene(0);
     }
 

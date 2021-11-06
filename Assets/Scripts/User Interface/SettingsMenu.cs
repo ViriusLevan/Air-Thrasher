@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Layouts;
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -21,6 +23,15 @@ public class SettingsMenu : MonoBehaviour
 
     void Awake()
     {
+        //InputSystem.AddDevice(new InputDeviceDescription
+        //{
+        //    deviceClass = "Mouse",
+        //    interfaceName = "HID",
+        //    product= "Gaming Mouse G400",
+        //    version= "26880",
+        //    manufacturer= "Logitech",
+        //    capabilities= "{\"vendorId\":1133,\"productId\":49733,\"usage\":128,\"usagePage\":65408,\"inputReportSize\":2,\"outputReportSize\":0,\"featureReportSize\":2,\"elements\":[],\"collections\":[]}"
+        //});
         if (!PlayerPrefs.HasKey("musicVolume"))
         {
             //mainAM.GetFloat("masterVolume", out float masterVolTemp);
@@ -73,7 +84,7 @@ public class SettingsMenu : MonoBehaviour
         }
 
         int mouseDisable = PlayerPrefs.GetInt("mouseMoveDisable", -1);
-        if (mouseDisable == -1 || mouseDisable ==0)
+        if (mouseDisable == -1 || mouseDisable == 0)
         {
             StartCoroutine(WaitTillPlayerSpawns(false));
             mouseMoveDisable.isOn = false;
@@ -87,6 +98,7 @@ public class SettingsMenu : MonoBehaviour
     }
 
     private IEnumerator WaitTillPlayerSpawns(bool state) {
+        yield return new WaitForSeconds(0.1f);
         while (mouseMoveToggle == null)
             yield return new WaitForSeconds(0.1f);
         mouseMoveToggle(state);

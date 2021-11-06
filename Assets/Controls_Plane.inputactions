@@ -33,6 +33,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "PitchYawMOUSE",
+                    "type": "Value",
+                    "id": "9f43841a-1727-4ac7-be17-bc0258a581bd",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Fire",
                     "type": "Value",
                     "id": "73d81381-6cc8-4f9f-8fad-d9eaa8741494",
@@ -203,17 +212,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "cd156eca-5045-4c59-861c-249e7d66fd70",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse;KBM",
-                    "action": "Pitch & Yaw",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
                     "name": "ArrowKeys",
                     "id": "dab4075f-4ff7-40bb-bb3b-5d46e6063b42",
                     "path": "2DVector",
@@ -373,7 +371,7 @@
                     "path": "<Keyboard>/y",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KBM",
                     "action": "CruiseControl",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -384,7 +382,7 @@
                     "path": "<Keyboard>/h",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "KBM",
                     "action": "CruiseControl",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -406,7 +404,7 @@
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "CruiseControl",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -417,10 +415,21 @@
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "CruiseControl",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b69e8534-ab7b-44c2-adf5-6281559533b3",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse;KBM",
+                    "action": "PitchYawMOUSE",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

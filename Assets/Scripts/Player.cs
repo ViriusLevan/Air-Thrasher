@@ -19,7 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float lookRotateSpeed;
     [SerializeField] private float stationaryRotateSpeed;
     private float defaultLookRotateSpeed;
-    private bool overrideMouse, fullyDisableMouse = false;
+    private bool fullyDisableMouse = false;
 
     private float verticalInput, rollInput;
     private Vector2 lookInput, screenCenter, mouseDistance;
@@ -168,13 +168,14 @@ public class Player : MonoBehaviour
 
         if (!dead)
         {
-            lookInput = playerInput.actions["Pitch & Yaw"].ReadValue<Vector2>();
             if (fullyDisableMouse)
             {
+                lookInput = playerInput.actions["Pitch & Yaw"].ReadValue<Vector2>();
                 lookInput = Vector2.ClampMagnitude(lookInput, 1f);
             }
             else
             {
+                lookInput = playerInput.actions["PitchYawMOUSE"].ReadValue<Vector2>();
                 mouseDistance.x =
                     (lookInput.x - screenCenter.x) / screenCenter.y;
                 mouseDistance.y =
@@ -321,28 +322,34 @@ public class Player : MonoBehaviour
     //Sort of done lol
     public void ToggleDisableMouse(bool newState) {
         fullyDisableMouse = newState;
-        if (newState)
-        {
-            InputSystem.DisableDevice(Mouse.current);
-            Cursor.visible = false;
-            //// Get binding mask for "PC_Scheme_Gamepad_Xbox".
-            //string bindingGroup = planeInput.controlSchemes.
-            //    First(x => x.name == "Keyboard").bindingGroup;
-            //string bindingGroup2 = planeInput.controlSchemes.
-            //    First(x => x.name == "Gamepad").bindingGroup;
-            //String[] bindingGs = { bindingGroup, bindingGroup2 };
-            //// Set as binding mask on actions. What this does is cause any binding that doesn't
-            //// match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
-            //// group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
-            //// look up the name like above), only bindings in that control scheme will be used.
-            //planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
-        }
-        else
-        {
-            InputSystem.EnableDevice(Mouse.current);
-            Cursor.visible = true;
-            //planeInput.bindingMask = null;
-        }
+        //Debug.Log(Mouse.current);
+        //if (newState)
+        //{
+        //    if (Mouse.current != null)
+        //    {
+        //        //InputSystem.RemoveDevice(Mouse.current);
+        //        InputSystem.DisableDevice(Mouse.current);
+        //    }
+        //    Cursor.visible = false;
+        //    //// Get binding mask for "PC_Scheme_Gamepad_Xbox".
+        //    //string bindingGroup = planeInput.controlSchemes.
+        //    //    First(x => x.name == "Keyboard").bindingGroup;
+        //    //string bindingGroup2 = planeInput.controlSchemes.
+        //    //    First(x => x.name == "Gamepad").bindingGroup;
+        //    //String[] bindingGs = { bindingGroup, bindingGroup2 };
+        //    //// Set as binding mask on actions. What this does is cause any binding that doesn't
+        //    //// match the mask to be ignored. So, by setting the binding mask to that of the "PC_Scheme_Gamepad_Xbox"
+        //    //// group (whose mask name will default to just "PC_Scheme_Gamepad_Xbox" so probably don't even need to
+        //    //// look up the name like above), only bindings in that control scheme will be used.
+        //    //planeInput.bindingMask = InputBinding.MaskByGroups(bindingGs);
+        //}
+        //else
+        //{
+        //    InputSystem.EnableDevice(Mouse.current);
+        //    Cursor.visible = true;
+        //    //planeInput.bindingMask = null;
+        //}
+        //Debug.Log(Mouse.current);
     }
 
     private void FireGun() {
