@@ -1,86 +1,91 @@
+using AirThrasher.Assets.Scripts.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Balloon : MonoBehaviour, ICrashable
+namespace AirThrasher.Assets.Scripts.Enemies
 {
-    [SerializeField] private Animator deflationAnimator;
-    //[SerializeField] private float deflationSpeed;
-    [SerializeField] private GameObject mObjectGO;
-    private BalloonEnemy masterObject;
-    private bool deflated=false;
-    private AudioSource aSource;
-    private MeshRenderer meshRenderer;
-    private SphereCollider sCollider;
-    private CapsuleCollider cCollider;
-
-    public enum PopCause
+    public class Balloon : MonoBehaviour, ICrashable
     {
-        RammedByPlayer, ShotByPlayer, Fratricide
-    }
-    public delegate void BalloonPopped(int boostValue, int score, PopCause cause);
-    public static event BalloonPopped balloonPopped;
+        [SerializeField] private Animator deflationAnimator;
+        //[SerializeField] private float deflationSpeed;
+        [SerializeField] private GameObject mObjectGO;
+        private BalloonEnemy masterObject;
+        private bool deflated = false;
+        private AudioSource aSource;
+        private MeshRenderer meshRenderer;
+        private SphereCollider sCollider;
+        private CapsuleCollider cCollider;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        aSource = this.GetComponent<AudioSource>();
-        if (mObjectGO == null)
+        public enum PopCause
         {
-            BalloonEnemy checkMO = this.GetComponentInParent<BalloonEnemy>();
-            if (checkMO == null)
+            RammedByPlayer, ShotByPlayer, Fratricide
+        }
+        public delegate void BalloonPopped(int boostValue, int score, PopCause cause);
+        public static event BalloonPopped balloonPopped;
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            aSource = GetComponent<AudioSource>();
+            if (mObjectGO == null)
             {
-                masterObject = this.GetComponent<BalloonEnemy>();
+                BalloonEnemy checkMO = GetComponentInParent<BalloonEnemy>();
+                if (checkMO == null)
+                {
+                    masterObject = GetComponent<BalloonEnemy>();
+                }
+                else
+                {
+                    masterObject = checkMO;
+                }
             }
             else
             {
-                masterObject = checkMO;
+                masterObject = mObjectGO.GetComponent<BalloonEnemy>();
             }
+            meshRenderer = GetComponent<MeshRenderer>();
+            sCollider = GetComponent<SphereCollider>();
+            cCollider = GetComponent<CapsuleCollider>();
         }
-        else {
-            masterObject = mObjectGO.GetComponent<BalloonEnemy>();
-        }
-        meshRenderer = this.GetComponent<MeshRenderer>();
-        sCollider = this.GetComponent<SphereCollider>();
-        cCollider = this.GetComponent<CapsuleCollider>();
-    }
 
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!deflated)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.tag == "Player")
+            if (!deflated)
             {
-                balloonPopped?.Invoke(7,100, PopCause.RammedByPlayer);
-                Crash();
+                if (collision.gameObject.tag == "Player")
+                {
+                    balloonPopped?.Invoke(7, 100, PopCause.RammedByPlayer);
+                    Crash();
+                }
             }
         }
-    }
 
-    public void Crash()
-    {
-        deflated = true;
-        //Debug.Log("Deflated");
-        if (meshRenderer!=null)
-            meshRenderer.enabled = false;
-        if(sCollider!=null)
-            sCollider.enabled = false;
-        if(cCollider!=null)
-            cCollider.enabled = false;
-        aSource?.PlayOneShot(aSource.clip, SettingsMenu.sfxVolume);
-        deflationAnimator.SetBool("deflated", true);
-        if (masterObject != null)
+        public void Crash()
         {
-            masterObject.ReduceBalloonCount();
+            deflated = true;
+            //Debug.Log("Deflated");
+            if (meshRenderer != null)
+                meshRenderer.enabled = false;
+            if (sCollider != null)
+                sCollider.enabled = false;
+            if (cCollider != null)
+                cCollider.enabled = false;
+            aSource?.PlayOneShot(aSource.clip, SettingsMenu.sfxVolume);
+            deflationAnimator.SetBool("deflated", true);
+            if (masterObject != null)
+            {
+                masterObject.ReduceBalloonCount();
+            }
+            transform.SetParent(null);
         }
-        this.transform.SetParent(null);
-    }
 
-    public void CrashedByPlayerBullet()
-    {
-        balloonPopped.Invoke(2,35, PopCause.ShotByPlayer);
-        Crash();
-    }
+        public void CrashedByPlayerBullet()
+        {
+            balloonPopped.Invoke(2, 35, PopCause.ShotByPlayer);
+            Crash();
+        }
 
+    }
 }

@@ -513,23 +513,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 8665912597451024763}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f9694b60a8d184790dc147e9c2715d, type: 3}
+  m_Script: {fileID: 11500000, guid: b9fd060c759915a40a2a570734d8291e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDeltaTarget: 30
+  maxDeltaTarget: 0
   explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
-  explosionRadius: 12
-  explosionForce: 20
-  explosionTimer: 5
+  explosionRadius: 5
+  explosionForce: 10
+  explosionTimer: 2
   numberOfBalloons: 1
-  timeBeforeSuicide: 30
+  timeBeforeSuicide: 20
   target: {fileID: 0}
-  rotationForce: 2
-  force: 20
+  rotationForce: 3
+  force: 12
   balloonAnimator: {fileID: 6924351516892416668}
   sCollider: {fileID: 6924351516892416659}
   cCollider: {fileID: 6924351516892416658}
-  timeBeforeActivation: 5
+  timeBeforeActivation: 3
 --- !u!65 &6624080642404906821
 BoxCollider:
   m_ObjectHideFlags: 0

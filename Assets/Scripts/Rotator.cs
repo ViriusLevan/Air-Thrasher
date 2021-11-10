@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rotator : MonoBehaviour
+namespace AirThrasher.Assets.Scripts
 {
-    private Transform tr;
-
-    // Start is called before the first frame update
-    void Start()
+    public class Rotator : MonoBehaviour
     {
-        tr = this.GetComponent<Transform>();
-    }
+        private Transform tr;
 
-    // Update is called once per frame
-    void Update()
-    {
-        tr.Rotate(0,Time.deltaTime,0,Space.World);
+        // Start is called before the first frame update
+        void Start()
+        {
+            tr = GetComponent<Transform>();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            tr.Rotate(0, Time.deltaTime, 0, Space.World);
+        }
     }
 }

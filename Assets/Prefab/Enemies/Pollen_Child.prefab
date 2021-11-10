@@ -383,7 +383,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5962219073374203716}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af8cb9eba3c9f7544a72724d3657b3f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 248e27c3a983f774883d32086b195d98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
@@ -760,7 +760,7 @@ HingeJoint:
   m_Anchor: {x: 0, y: -2.45, z: -1.3}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.00000023841858, y: 0.14999962, z: 2.8000033}
+  m_ConnectedAnchor: {x: 0, y: 0.14999986, z: 2.8000023}
   m_UseSpring: 0
   m_Spring:
     spring: 0

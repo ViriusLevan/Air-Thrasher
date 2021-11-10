@@ -1,15 +1,19 @@
+using AirThrasher.Assets.Scripts.UserInterface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetSFXVolumeOnAwake : MonoBehaviour
+namespace AirThrasher.Assets.Scripts
 {
-    private void Awake()
+    public class SetSFXVolumeOnAwake : MonoBehaviour
     {
-        AudioSource[] aSources = GetComponents<AudioSource>();
-        for (int i = 0; i < aSources.Length; i++)
+        private void Awake()
         {
-            aSources[i].volume = SettingsMenu.sfxVolume;
+            AudioSource[] aSources = GetComponents<AudioSource>();
+            for (int i = 0; i < aSources.Length; i++)
+            {
+                aSources[i].volume = SettingsMenu.sfxVolume;
+            }
         }
     }
 }

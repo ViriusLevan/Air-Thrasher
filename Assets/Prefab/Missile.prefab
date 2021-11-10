@@ -96,14 +96,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5944898077240511394}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29cd01b021fe359498839dff7375c71c, type: 3}
+  m_Script: {fileID: 11500000, guid: 97e11f877cde9294a8088713240f8c34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  force: 52
-  rotationForce: 20
-  secondsBeforeExplosion: 17
-  secondsBeforeHoming: 1
+  force: 50
+  rotationForce: 35
+  secondsBeforeExplosion: 15
+  secondsBeforeHoming: 2
   explosionPrefab: {fileID: 8408790605209368098, guid: f24bc02128aee684cb0a3ebcffdfa2e0, type: 3}
 --- !u!54 &5944898077240511393
 Rigidbody:
